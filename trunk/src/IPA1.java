@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-public class main {
+public class IPA1 {
 
 	/**
 	 * @param args
@@ -38,18 +38,20 @@ public class main {
 			playGame(mapContainer);
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Insufficient argument");
 		}
 	}
 
 	private static void playGame(List<mapComponent> mapContainer) {
 		String currentRoom = null;
-		String currentItem[] = new String[10];
+		List<String> currentItem = new ArrayList<String>();
 		String command = null;
 		boolean exitFound = false;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String patternMove = "^[nsew]$";
 		String patternInventory = "^[i]$";
+		String patternTake = "^(take).*";
 		String patternOpen = "^(open ).+";
 		String patternRead = "^(read ).+";
 		String patternDrop = "^(drop ).+";
@@ -58,6 +60,7 @@ public class main {
 		String patternAttack = "^(attack ).+";
 		String patternQuit = "^(exit|quit|stop)$";
 		System.out.println("Game commencing!");
+		boolean overridden = false;
 		
 		currentRoom = zorkCheckEntrance(mapContainer);
 		
@@ -67,7 +70,11 @@ public class main {
 				command = br.readLine();
 				//System.out.println("Command caught: " + command);
 				if (command.matches(patternMove)) {
-					String transition = zorkMove(mapContainer, currentRoom, currentItem, command);
+					overridden = ((room) findObject(mapContainer, currentRoom, "room")).checkTrigger(command, currentItem);
+					if (!overridden) {
+						System.out.println("Not overridden!");
+					}
+					/*String transition = zorkMove(mapContainer, currentRoom, currentItem, command);
 					
 					if (transition.equals("transition error")) {
 						System.out.println("Can't go that way.");
@@ -75,10 +82,36 @@ public class main {
 					else {
 						currentRoom = transition;
 						System.out.println(" -->" + currentRoom);
-					}
+					}*/
 				}
 				else if (command.matches(patternInventory)) {
-					System.out.println("loading inventory...");
+					System.out.println("Inventory: " + Arrays.toString(currentItem.toArray()));
+				}
+				else if (command.matches(patternTake)) {
+					if (command.split(" ").length != 2) {
+						System.out.println("Incorrect command. Usage: take [item]");
+					}
+					else {
+						boolean itemFound = false;
+						String[] itemList = ((room) findObject(mapContainer, currentRoom, "room")).item;
+						for (int i = 0; i < itemList.length && !itemFound; i++) {
+							if ((command.split(" ")[1]).equals(itemList[i])) {
+								currentItem.add(command.split(" ")[1]);
+								itemFound = true;;
+							}
+						}
+						if (!itemFound) {
+							System.out.println("Item [" 
+									+ command.split(" ")[1]
+									+ "] does not exist in room ["
+									+ currentRoom);
+						}
+						else {
+							System.out.println("Item [" 
+									+ command.split(" ")[1] 
+									+ "] added to inventory");
+						}
+					}
 				}
 				else if (command.matches(patternOpen)) {
 					System.out.println("opening...");

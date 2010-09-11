@@ -3,9 +3,9 @@ public class zorkContainer extends mapComponent {
 	public String item;
 	public String accept;
 	public String status;
-	private zorkTrigger trigger;
+	private zorkTrigger[] trigger;
 	
-	public zorkContainer(String n, String t, String d, String i, String a, String s, zorkTrigger zt) {
+	public zorkContainer(String n, String t, String d, String i, String a, String s, zorkTrigger[] zt) {
 		super(n, t);
 		description = d;
 		item = i;
@@ -20,8 +20,10 @@ public class zorkContainer extends mapComponent {
 		System.out.println("Contains: " + item);
 		System.out.println("Status: " + status);
 		System.out.println("Accepts: " + accept);
-		if (trigger != null) {
-			trigger.info();
+		for (int i = 0; i < trigger.length; i++) {
+			if (trigger[i] != null) {
+				trigger[i].info();
+			}
 		}
 		System.out.println("=================");
 	}

@@ -87,6 +87,7 @@ public class XMLReader {
 		// Parse XML "room" element
 		room tempRoom = new room(XMLGetValue(parent, "name")
 								, ((Node) parent).getNodeName()
+								, XMLGetValue(parent, "type")
 								, XMLGetValue(parent, "description")
 								, XMLGetArray(parent, "item")
 								, XMLGetArray(parent, "container")
@@ -155,21 +156,20 @@ public class XMLReader {
 		return to;
 	}
 	
-	private zorkTrigger XMLAttachTrigger(NodeList parent) {
+	private zorkTrigger[] XMLAttachTrigger(NodeList parent) {
 		// Attach trigger to room/item.
-		boolean hasTrigger = false;
+		int triggerCount = 0;
 		String tType = null;
 		String tCommand = null;
 		String[] tAction = new String[10];
 		int actionCount = 0;
 		String tPrint = null;
-		zorkTrigger temp = null;
+		zorkTrigger[] temp = new zorkTrigger[10];
 		zorkCondition cond = null;
 		
-		for (int i = 0; i < parent.getLength() && !hasTrigger; i++) {
+		for (int i = 0; i < parent.getLength(); i++) {
 			if (parent.item(i).getNodeType() != Node.TEXT_NODE
 					&& (parent.item(i).getNodeName().equals("trigger"))) {
-				hasTrigger = true;
 				NodeList triggerNode = parent.item(i).getChildNodes();
 				for (int j = 0; j < triggerNode.getLength(); j++) {
 					if (triggerNode.item(j).getNodeType() != Node.TEXT_NODE) {
@@ -190,7 +190,7 @@ public class XMLReader {
 						}
 					}
 				}
-				temp = new zorkTrigger(tType, tCommand, cond, tPrint, tAction);
+				temp[triggerCount++] = new zorkTrigger(tType, tCommand, cond, tPrint, tAction);
 			}
 		}
 		return temp;
