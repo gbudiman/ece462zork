@@ -15,7 +15,7 @@ public class zorkTrigger {
 	}
 	public void info() {
 		System.out.println("***** TRIGGER *****");
-		System.out.println("Type: " + type);
+		System.out.println("Type: " + type + " invoked?: " + hasBeenInvoked);
 		System.out.println("Command: " + command);
 		System.out.print("Action: ");
 		for (int i = 0; i < action.length; i++) {
