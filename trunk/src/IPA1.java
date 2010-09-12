@@ -164,10 +164,8 @@ public class IPA1 {
 						System.out.println("Incorrect command. Usage: open [target]");
 					}
 					else if (command.trim().equals("open exit")) {
-						System.out.println("caught: [" + command + "]");
-						System.out.println("expect: " + ((room) findObject(mapContainer, currentRoom, "room")).type);
-						if (((room) findObject(mapContainer, currentRoom, "room")).type != null
-								&& ((room) findObject(mapContainer, currentRoom, "room")).type.equals("exit")) {
+						if (((room) findObject(mapContainer, currentRoom, "room")).roomType != null
+								&& ((room) findObject(mapContainer, currentRoom, "room")).roomType.equals("exit")) {
 							exitFound = true;
 						}
 					}
