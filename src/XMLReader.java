@@ -92,7 +92,8 @@ public class XMLReader {
 								, XMLGetArray(parent, "item")
 								, XMLGetArray(parent, "container")
 								, XMLGetBorder(parent)
-								, XMLAttachTrigger(parent));
+								, XMLAttachTrigger(parent)
+								, XMLGetArray(parent, "creature"));
 		mapContainer.add(tempRoom);
 	}
 	
@@ -165,7 +166,8 @@ public class XMLReader {
 		int actionCount = 0;
 		String tPrint = null;
 		zorkTrigger[] temp = new zorkTrigger[10];
-		zorkCondition cond = null;
+		zorkCondition[] cond = new zorkCondition[10];
+		int conditionCount = 0;
 		
 		for (int i = 0; i < parent.getLength(); i++) {
 			if (parent.item(i).getNodeType() != Node.TEXT_NODE
@@ -186,7 +188,7 @@ public class XMLReader {
 							tPrint = triggerNode.item(j).getTextContent();
 						}
 						else if (triggerNode.item(j).getNodeName().equals("condition")) {
-							cond = XMLAttachCondition(triggerNode.item(j).getChildNodes());
+							cond[conditionCount++] = XMLAttachCondition(triggerNode.item(j).getChildNodes());
 						}
 					}
 				}
