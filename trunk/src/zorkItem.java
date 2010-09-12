@@ -31,8 +31,11 @@ public class zorkItem extends mapComponent {
 		System.out.println("=================");
 	}
 	
-	public void activate(List<mapComponent> map) {
-		for (int i = 0; i < this.turnon.action.length; i++) {
+	public List<mapComponent> activate(List<mapComponent> map) {
+		System.out.println(this.turnon.print);
+		map = takeAction(map, this.turnon.action);
+		// Moved to mapComponent.java
+		/*for (int i = 0; i < this.turnon.action.length; i++) {
 			if (this.turnon.action[i] != null) {
 				String[] btsCommand = this.turnon.action[i].split(" ");
 				if (btsCommand[0].equals("Update")) {
@@ -63,7 +66,7 @@ public class zorkItem extends mapComponent {
 				}
 				// TODO: Game Over
 			}
-		}
-		System.out.println(this.status);
+		}*/
+		return map;
 	}
 }

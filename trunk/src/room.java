@@ -4,13 +4,13 @@ public class room extends mapComponent {
 	// Derived class of room
 	public String description = null;
 	public String roomType = null;
-	public String[] item = new String[10];
+	public List<String> item = new ArrayList<String>();
 	public zorkBorder[] border = new zorkBorder[4];
-	public String[] creatures = new String[10];
-	public String[] container = new String[10];
+	public List<String> creatures = new ArrayList<String>();
+	public List<String> container = new ArrayList<String>();
 	protected zorkTrigger[] trigger = new zorkTrigger[10];
 	
-	public room (String n, String t, String rT, String d, String[] i, String[] c, zorkBorder[] b, zorkTrigger[] trig, String[] zc) {
+	public room (String n, String t, String rT, String d, List<String> i, List<String> c, zorkBorder[] b, zorkTrigger[] trig, List<String> zc) {
 		super(n, t);
 		description = d;
 		roomType = rT;
@@ -25,8 +25,8 @@ public class room extends mapComponent {
 		super.info();
 		System.out.println("Room type: " + roomType);
 		System.out.println("Description: " + description);
-		System.out.println("Item(s): " + Arrays.toString(item));
-		System.out.println("Container(s): " + Arrays.toString(container));
+		System.out.println("Item(s): " + Arrays.toString(item.toArray()));
+		System.out.println("Container(s): " + Arrays.toString(container.toArray()));
 		System.out.print("Border(s): ");
 		for (int i = 0; i < border.length; i++) {
 			if (border[i] != null) {
@@ -39,20 +39,17 @@ public class room extends mapComponent {
 				trigger[i].info();
 			}
 		}
-		System.out.print("Creature(s): ");
-		for (int i = 0; i < creatures.length; i++) {
-			if (creatures[i] != null) {
-				System.out.print(" " + creatures[i]);
-			}
-		}
+		System.out.print("Creature(s): " + Arrays.toString(creatures.toArray()));
 		System.out.println();
 		System.out.println("=================");
 	}
 	
+	// Moved to mapComponent.java
 	public boolean checkTrigger(String command, List<String> currentInventory, List<mapComponent> map) {
 		if (this.trigger == null) {
 			return false;
 		}
+		
 		for (int i = 0; this.trigger[i] != null; i++) {
 			if (this.trigger[i].command != null && this.trigger[i].command.equals(command)) {
 				// Check if non-permanent trigger has been invoked.
@@ -78,12 +75,18 @@ public class room extends mapComponent {
 					else if (this.trigger[i].condition[j] != null
 							&& this.trigger[i].condition[j].owner == null 
 							&& this.trigger[i].condition[j].object != null) {
-						if (((zorkContainer) findObject(map, this.trigger[i].condition[j].object, "container")).status.equals(this.trigger[i].condition[j].status)) {
+						//System.out.println("Expecting : " + ((zorkContainer) findObject(map, this.trigger[i].condition[j].object, "container")).status);
+						//System.out.println("Trigger status : " + this.trigger[i].condition[j].status);
+						if (((zorkContainer) findObject(map, this.trigger[i].condition[j].object, "container")).status != null
+								&& ((zorkContainer) findObject(map, this.trigger[i].condition[j].object, "container")).status != null
+								&& ((zorkContainer) findObject(map, this.trigger[i].condition[j].object, "container")).status.equals(this.trigger[i].condition[j].status)) {
 							System.out.println(this.trigger[i].description);
 							this.trigger[i].hasBeenInvoked = true;
 							return true;
 						}
-						else if (((zorkItem) findObject(map, this.trigger[i].condition[j].object, "item")).status.equals(this.trigger[i].condition[j].status)) {
+						else if (((zorkItem) findObject(map, this.trigger[i].condition[j].object, "item")) != null
+								&&((zorkItem) findObject(map, this.trigger[i].condition[j].object, "item")).status != null
+								&& ((zorkItem) findObject(map, this.trigger[i].condition[j].object, "item")).status.equals(this.trigger[i].condition[j].status)) {
 							System.out.println(this.trigger[i].description);
 							this.trigger[i].hasBeenInvoked = true;
 							return true;
@@ -115,27 +118,45 @@ public class room extends mapComponent {
 	}
 	
 	public void addItem(String newItem) {
-		for (int i = 0; i < this.item.length; i++) {
+		/*for (int i = 0; i < this.item.length; i++) {
 			if (this.item[i] == null) {
 				this.item[i] = newItem;
 				i = this.item.length; // immediately exit
 			}
+		}*/
+		this.item.add(newItem);
+	}
+	
+	public void dropItem(List<String> inventory, String itemToDrop) {
+		if (inventory.contains(itemToDrop)) {
+			this.item.add(itemToDrop);
+			inventory.remove(itemToDrop);
+			System.out.println(itemToDrop + " dropped");
+		}
+		else {
+			System.out.println("Can't drop item not in your inventory");
 		}
 	}
 	
 	public boolean contains(String type, String seek) {
 		if (type.equals("creature")) {
-			for (int i = 0; i < this.creatures.length; i++) {
+			/*for (int i = 0; i < this.creatures.length; i++) {
 				if (this.creatures[i] != null && this.creatures[i].equals(seek)) {
 					return true;
 				}
+			}*/
+			if (this.creatures.contains(seek)) {
+				return true;
 			}
 		}
 		else if (type.equals("container")) {
-			for (int i = 0; i < this.container.length; i++) {
+			/*for (int i = 0; i < this.container.length; i++) {
 				if (this.container[i] != null && this.container[i].equals(seek)) {
 					return true;
 				}
+			}*/
+			if (this.container.contains(seek)) {
+				return true;
 			}
 		}
 		return false;

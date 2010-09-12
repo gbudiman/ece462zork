@@ -71,12 +71,21 @@ public class creature extends mapComponent {
 		return false;
 	}
 	
-	public void attack(String weapon) {
+	public List<mapComponent> attack(List<mapComponent> map, List<String> item, String weapon) {
 		if (this.vulnerability.equals(weapon)) {
-			System.out.println(this.attack.print);
+			if (item.contains(this.attack.condition.object)
+					&& ((zorkItem) findObject(map, weapon, "item")).status.equals(this.attack.condition.status)) {
+				System.out.println("You assault the " + this.name + " with the " + weapon);
+				System.out.println(this.attack.print);
+				map = takeAction(map, this.attack.action);
+			}	
+			else {
+				System.out.println("Unmatching " + weapon + " status");
+			}
 		}
 		else {
 			System.out.println(this.name + " is invulnerable to " + weapon);
 		}
+		return map;
 	}
 }

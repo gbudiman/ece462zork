@@ -54,7 +54,7 @@ public class IPA1 {
 		String patternTake = "^(take).*";
 		String patternOpen = "^(open).*";
 		String patternRead = "^(read).*";
-		String patternDrop = "^(drop ).+";
+		String patternDrop = "^(drop).*";
 		String patternPut = "^(put).*";
 		String patternTurnOn = "^(turn[ ]?on).*";
 		String patternAttack = "^(attack).*";
@@ -99,14 +99,20 @@ public class IPA1 {
 					}
 					else {
 						boolean itemFound = false;
-						String[] itemList = ((room) findObject(mapContainer, currentRoom, "room")).item;
+						/*String[] itemList = ((room) findObject(mapContainer, currentRoom, "room")).item;
 						for (int i = 0; i < itemList.length && !itemFound; i++) {
 							if ((command.split(" ")[1]).equals(itemList[i])) {
 								currentItem.add(command.split(" ")[1]);
+								((room) findObject(mapContainer, currentRoom, "room")).item.
 								itemFound = true;
 							}
+						}*/
+						if (((room) findObject(mapContainer, currentRoom, "room")).item.contains(command.split(" ")[1])) {
+							currentItem.add(command.split(" ")[1]);
+							((room) findObject(mapContainer, currentRoom, "room")).item.remove(command.split(" ")[1]);
+							itemFound = true;
 						}
-						String[] containerList = ((room) findObject(mapContainer, currentRoom, "room")).container;
+						/*String[] containerList = ((room) findObject(mapContainer, currentRoom, "room")).container;
 						for (int i = 0; i < containerList.length && !itemFound; i++) {
 							/*if (containerList[i] != null && containerList[i].equals(command.split(" ")[1])) {
 								itemFound = true;
@@ -114,13 +120,29 @@ public class IPA1 {
 									System.out.println("Can't take item from unopened container");
 								}
 							}*/
-							if (containerList[i] != null 
+							/*if (containerList[i] != null 
 									&& ((zorkContainer) findObject(mapContainer, containerList[i], "container")).item.equals(command.split(" ")[1])) {
 								if (!((zorkContainer) findObject(mapContainer, containerList[i], "container")).take(currentItem)) {
 									System.out.println("Can't take item from unopened container");
 								}
 								else {
 									itemFound = true;
+								}
+							}
+						}*/
+						else {
+							List<String> containersInRoom = ((room) findObject(mapContainer, currentRoom, "room")).container;
+							ListIterator<String> i = containersInRoom.listIterator();
+							while (i.hasNext() && !itemFound) {
+								String inspection = i.next();
+								if (((zorkContainer) findObject(mapContainer, inspection, "container")).item != null
+										&& ((zorkContainer) findObject(mapContainer, inspection, "container")).item.equals(command.split(" ")[1])) {
+									if (!((zorkContainer) findObject(mapContainer, inspection, "container")).take(currentItem)) {
+										System.out.println("Can't take item from unopened container");
+									}
+									else {
+										itemFound = true;
+									}
 								}
 							}
 						}
@@ -140,6 +162,14 @@ public class IPA1 {
 				else if (command.matches(patternOpen)) {
 					if (command.split(" ").length != 2) {
 						System.out.println("Incorrect command. Usage: open [target]");
+					}
+					else if (command.trim().equals("open exit")) {
+						System.out.println("caught: [" + command + "]");
+						System.out.println("expect: " + ((room) findObject(mapContainer, currentRoom, "room")).type);
+						if (((room) findObject(mapContainer, currentRoom, "room")).type != null
+								&& ((room) findObject(mapContainer, currentRoom, "room")).type.equals("exit")) {
+							exitFound = true;
+						}
 					}
 					else if (!((room) findObject(mapContainer, currentRoom, "room")).contains("container", command.split(" ")[1])) {
 						System.out.println("No such container in room " + currentRoom);
@@ -163,6 +193,12 @@ public class IPA1 {
 					}
 				}
 				else if (command.matches(patternDrop)) {
+					if (command.split(" ").length != 2) {
+						System.out.println("Incorrect command. usage: drop [item]");
+					}
+					else {
+						((room) findObject(mapContainer, currentRoom, "room")).dropItem(currentItem, command.split(" ")[1]);
+					}
 				}
 				else if (command.matches(patternPut)) {
 					if (command.split(" ").length != 4) {
@@ -170,7 +206,7 @@ public class IPA1 {
 					}
 					else {
 						if (((room) findObject(mapContainer, currentRoom, "room")).contains("container", command.split(" ")[3])) {
-							((zorkContainer) findObject(mapContainer, command.split(" ")[3], "container")).put(currentItem, command.split(" ")[1]);
+							mapContainer = ((zorkContainer) findObject(mapContainer, command.split(" ")[3], "container")).put(mapContainer, currentItem, command.split(" ")[1]);
 						}
 						else {
 							System.out.println("No such container");
@@ -184,7 +220,7 @@ public class IPA1 {
 					else {
 						if (currentItem.contains(command.split(" ")[2])) {
 							System.out.println("You activated the " + command.split(" ")[2]);
-							((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).activate(mapContainer);
+							mapContainer = ((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).activate(mapContainer);
 						}
 						else {
 							System.out.println("Can't turn on non-inventorized item [" + command.split(" ")[2] + "]");
@@ -200,7 +236,7 @@ public class IPA1 {
 						if (((room) findObject(mapContainer, currentRoom, "room")).contains("creature", command.split(" ")[1])) {
 							//System.out.println("attacking...");
 							if (currentItem.contains(command.split(" ")[3])) {
-								((creature) findObject(mapContainer, command.split(" ")[1], "creature")).attack(command.split(" ")[3]);
+								((creature) findObject(mapContainer, command.split(" ")[1], "creature")).attack(mapContainer, currentItem, command.split(" ")[3]);
 							}
 							else {
 								System.out.println("Item " + command.split(" ")[3] + " is not in your inventory");
@@ -224,7 +260,9 @@ public class IPA1 {
 				System.out.println("Input recognition exception caught: ");
 				e.printStackTrace();
 			}
-			
+		}
+		if (exitFound) {
+			System.out.println("Game Over");
 		}
 	}
 
