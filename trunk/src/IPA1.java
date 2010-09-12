@@ -52,12 +52,12 @@ public class IPA1 {
 		String patternMove = "^[nsew]$";
 		String patternInventory = "^[i]$";
 		String patternTake = "^(take).*";
-		String patternOpen = "^(open ).+";
-		String patternRead = "^(read ).+";
+		String patternOpen = "^(open).*";
+		String patternRead = "^(read).*";
 		String patternDrop = "^(drop ).+";
-		String patternPut = "^(put ).+";
-		String patternTurnOn = "^(turn on ).+";
-		String patternAttack = "^(attack ).+";
+		String patternPut = "^(put).*";
+		String patternTurnOn = "^(turn[ ]?on).*";
+		String patternAttack = "^(attack).*";
 		String patternQuit = "^(exit|quit|stop)$";
 		System.out.println("Game commencing!");
 		boolean overridden = false;
@@ -70,9 +70,15 @@ public class IPA1 {
 				command = br.readLine();
 				//System.out.println("Command caught: " + command);
 				if (command.matches(patternMove)) {
-					overridden = ((room) findObject(mapContainer, currentRoom, "room")).checkTrigger(command, currentItem);
+					overridden = ((room) findObject(mapContainer, currentRoom, "room")).checkTrigger(command, currentItem, mapContainer);
 					if (!overridden) {
-						System.out.println("Not overridden!");
+						if (((room) findObject(mapContainer, currentRoom, "room")).zorkMove(command) == null) {
+							System.out.println("Can't go there [" + command + "]");
+						}
+						else {
+							currentRoom = ((room) findObject(mapContainer, currentRoom, "room")).zorkMove(command);
+							System.out.println(((room) findObject(mapContainer, currentRoom, "room")).description);
+						}
 					}
 					/*String transition = zorkMove(mapContainer, currentRoom, currentItem, command);
 					
@@ -97,7 +103,25 @@ public class IPA1 {
 						for (int i = 0; i < itemList.length && !itemFound; i++) {
 							if ((command.split(" ")[1]).equals(itemList[i])) {
 								currentItem.add(command.split(" ")[1]);
-								itemFound = true;;
+								itemFound = true;
+							}
+						}
+						String[] containerList = ((room) findObject(mapContainer, currentRoom, "room")).container;
+						for (int i = 0; i < containerList.length && !itemFound; i++) {
+							/*if (containerList[i] != null && containerList[i].equals(command.split(" ")[1])) {
+								itemFound = true;
+								if (!((zorkContainer) findObject(mapContainer, containerList[i], "container")).take(currentItem)) {
+									System.out.println("Can't take item from unopened container");
+								}
+							}*/
+							if (containerList[i] != null 
+									&& ((zorkContainer) findObject(mapContainer, containerList[i], "container")).item.equals(command.split(" ")[1])) {
+								if (!((zorkContainer) findObject(mapContainer, containerList[i], "container")).take(currentItem)) {
+									System.out.println("Can't take item from unopened container");
+								}
+								else {
+									itemFound = true;
+								}
 							}
 						}
 						if (!itemFound) {
@@ -114,22 +138,78 @@ public class IPA1 {
 					}
 				}
 				else if (command.matches(patternOpen)) {
-					System.out.println("opening...");
+					if (command.split(" ").length != 2) {
+						System.out.println("Incorrect command. Usage: open [target]");
+					}
+					else if (!((room) findObject(mapContainer, currentRoom, "room")).contains("container", command.split(" ")[1])) {
+						System.out.println("No such container in room " + currentRoom);
+					}
+					else {
+						//System.out.println("opening " + command.split(" ")[1]);
+						((zorkContainer) findObject(mapContainer, command.split(" ")[1], "container")).open();
+					}
 				}
 				else if (command.matches(patternRead)) {
-					System.out.println("reading item...");
+					if (command.split(" ").length != 2) {
+						System.out.println("Incorrect command. Usage: read [inventory]");
+					}
+					else {
+						if (currentItem.contains(command.split(" ")[1])) {
+							System.out.println(((zorkItem) findObject(mapContainer, command.split(" ")[1], "item")).writing);
+						}
+						else {
+							System.out.println("No such item in inventory");
+						}
+					}
 				}
 				else if (command.matches(patternDrop)) {
-					System.out.println("dropping item...");
 				}
 				else if (command.matches(patternPut)) {
-					System.out.println("putting item...");
+					if (command.split(" ").length != 4) {
+						System.out.println("Incorrect command. Usage: put [item] in [target]");
+					}
+					else {
+						if (((room) findObject(mapContainer, currentRoom, "room")).contains("container", command.split(" ")[3])) {
+							((zorkContainer) findObject(mapContainer, command.split(" ")[3], "container")).put(currentItem, command.split(" ")[1]);
+						}
+						else {
+							System.out.println("No such container");
+						}
+					}
 				}
 				else if (command.matches(patternTurnOn)) {
-					System.out.println("turning on item...");
+					if (command.split(" ").length != 3) {
+						System.out.println("Incorrect command. Usage: turn on [item]");
+					}
+					else {
+						if (currentItem.contains(command.split(" ")[2])) {
+							System.out.println("You activated the " + command.split(" ")[2]);
+							((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).activate(mapContainer);
+						}
+						else {
+							System.out.println("Can't turn on non-inventorized item [" + command.split(" ")[2] + "]");
+						}
+					}
 				}
 				else if (command.matches(patternAttack)) {
-					System.out.println("attacking monster...");
+					//System.out.println("attacking monster...");
+					if (command.split(" ").length != 4) {
+						System.out.println("Incorrect command. Usage: attack [target] with [object]");
+					}
+					else {
+						if (((room) findObject(mapContainer, currentRoom, "room")).contains("creature", command.split(" ")[1])) {
+							//System.out.println("attacking...");
+							if (currentItem.contains(command.split(" ")[3])) {
+								((creature) findObject(mapContainer, command.split(" ")[1], "creature")).attack(command.split(" ")[3]);
+							}
+							else {
+								System.out.println("Item " + command.split(" ")[3] + " is not in your inventory");
+							}
+						}
+						else {
+							System.out.println("No such creature in room " + currentRoom);
+						}
+					}
 				}
 				else if (command.matches(patternQuit)) {
 					System.out.println("Exiting game...");

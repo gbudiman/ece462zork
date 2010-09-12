@@ -1,12 +1,12 @@
 public class zorkTrigger {
 	public String type;
 	public String command;
-	public zorkCondition condition;
+	public zorkCondition[] condition;
 	public String description = null;
 	public String[] action = null;
 	public boolean hasBeenInvoked = false;
 	
-	public zorkTrigger(String t, String c, zorkCondition zc, String d, String[] a) {
+	public zorkTrigger(String t, String c, zorkCondition[] zc, String d, String[] a) {
 		type = t;
 		command = c;
 		condition = zc;
@@ -25,6 +25,10 @@ public class zorkTrigger {
 		}
 		System.out.println();
 		System.out.println("Print: " + description);
-		condition.info();
+		for (int i = 0; i < condition.length; i++) {
+			if (condition[i] != null) {
+				condition[i].info();
+			}
+		}
 	}
 }
