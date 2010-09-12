@@ -50,18 +50,73 @@ public class zorkContainer extends mapComponent {
 		return false;
 	}
 	
-	public void put(List<String> inventory, String newItem) {
+	public List<mapComponent> put(List<mapComponent> map, List<String> inventory, String newItem) {
 		if (this.item == null) {
-			this.item = newItem;
-			if (!inventory.remove(newItem)) {
-				System.out.println(newItem + " is not in your inventory");
+			if (this.accept != null) {
+				if (!this.accept.equals(newItem)) {
+					System.out.println("Container " + this.name + " only accepts " + this.accept);
+				}
+				else {
+					this.item = newItem;
+					inventory.remove(newItem);
+					map = checkTrigger(map, this.trigger);
+				}
 			}
 			else {
-				System.out.println("Item " + newItem + " added to " + this.name);
+				this.item = newItem;
+				if (!inventory.remove(newItem)) {
+					System.out.println(newItem + " is not in your inventory");
+				}
+				else {
+					System.out.println("Item " + newItem + " added to " + this.name);
+				}
 			}
 		}
 		else if (this.item != null) {
 			System.out.println("Container " + this.name + " is not empty");
 		}
+		
+		return map;
+	}
+	
+	public List<mapComponent> checkTrigger(List<mapComponent> map, zorkTrigger[] t) {
+		for (int i = 0; i < t.length; i++) {
+			for (int j = 0; t[i] != null && j < t[i].condition.length; j++) {
+				if (t[i].condition[j] != null) {
+					if ((room) findObject(map, t[i].condition[j].owner, "room") != null) {
+						room tso = (room) findObject(map, t[i].condition[j].owner, "room");
+						if (t[i].condition[j].has.equals("yes")) {
+							if (tso.contains("item", t[i].condition[j].object)) {
+								map = takeAction(map, t[i].action);
+								System.out.println(t[i].description);
+							}
+						}
+						else {
+							if (!tso.contains("item", t[i].condition[j].object)){
+								map = takeAction(map, t[i].action);
+								System.out.println(t[i].description);
+							}
+						}
+					}
+					else if ((zorkContainer) findObject(map, t[i].condition[j].owner, "container") != null) {
+						zorkContainer tso = (zorkContainer) findObject(map, t[i].condition[j].owner, "container");
+						if (t[i].condition[j].has.equals("yes")) {
+							if (tso.item.equals(t[i].condition[j].object)) {
+								map = takeAction(map, t[i].action);
+								System.out.println(t[i].description);
+							}
+						}
+						else {
+							if (!tso.item.equals(t[i].condition[j].object)) {
+								map = takeAction(map, t[i].action);
+								System.out.println(t[i].description);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return map;
 	}
 }

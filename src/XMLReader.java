@@ -89,11 +89,11 @@ public class XMLReader {
 								, ((Node) parent).getNodeName()
 								, XMLGetValue(parent, "type")
 								, XMLGetValue(parent, "description")
-								, XMLGetArray(parent, "item")
-								, XMLGetArray(parent, "container")
+								, XMLGetList(parent, "item")
+								, XMLGetList(parent, "container")
 								, XMLGetBorder(parent)
 								, XMLAttachTrigger(parent)
-								, XMLGetArray(parent, "creature"));
+								, XMLGetList(parent, "creature"));
 		mapContainer.add(tempRoom);
 	}
 	
@@ -242,7 +242,7 @@ public class XMLReader {
 	private String XMLGetValue(NodeList parent, String seek) {
 		// Extract a scalar
 		boolean isFound = false;
-		String extracted = "ERROR: NOT FOUND!";
+		String extracted = null;
 		
 		for (int i = 0; i < parent.getLength() && !isFound; i++) {
 			if (parent.item(i).getNodeType() != Node.TEXT_NODE
@@ -262,7 +262,7 @@ public class XMLReader {
 		
 		for (int i = 0; i < parent.getLength(); i++) {
 			if (parent.item(i).getNodeType() != Node.TEXT_NODE
-					&& parent.item(i).getNodeName() == seek) {
+					&& parent.item(i).getNodeName().equals(seek)) {
 				extracted[index++] = parent.item(i).getTextContent();
 			}
 			
@@ -271,6 +271,19 @@ public class XMLReader {
 									+ extracted.length
 									+ " " + seek);
 				break;
+			}
+		}
+		
+		return extracted;
+	}
+
+	private List<String> XMLGetList(NodeList parent, String seek) {
+		List<String> extracted = new ArrayList<String>();
+		
+		for (int i = 0; i < parent.getLength(); i++) {
+			if (parent.item(i).getNodeType() != Node.TEXT_NODE
+					&& parent.item(i).getNodeName().equals(seek)) {
+				extracted.add(parent.item(i).getTextContent());
 			}
 		}
 		
