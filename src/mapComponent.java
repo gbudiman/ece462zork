@@ -95,7 +95,17 @@ public class mapComponent {
 								&& roomObject.trigger[j].condition[k].object != null
 								&& roomObject.trigger[j].condition[k].status != null
 								&& roomObject.trigger[j].condition[k].status.equals(status)) {
-							System.out.println(roomObject.trigger[j].description);
+							if ((roomObject.trigger[j].type == null
+									|| roomObject.trigger[j].type.equals("single"))
+									&& roomObject.trigger[j].hasBeenInvoked == false) {
+								roomObject.trigger[j].hasBeenInvoked = true;
+								System.out.println(roomObject.trigger[j].description);
+							}
+							else if ((roomObject.trigger[j].type.equals("permanent"))) {
+								roomObject.trigger[j].hasBeenInvoked = true;
+								System.out.println(roomObject.trigger[j].description);
+							}
+							//System.out.println(roomObject.trigger[j].description);
 						}
 					}
 				}
@@ -111,7 +121,17 @@ public class mapComponent {
 								&& itemObject.trigger[j].condition[k].object != null
 								&& itemObject.trigger[j].condition[k].status != null
 								&& itemObject.trigger[j].condition[k].status.equals(status)) {
-							System.out.println(itemObject.trigger[j].description);
+							if ((itemObject.trigger[j].type == null
+									|| itemObject.trigger[j].type.equals("single"))
+									&& itemObject.trigger[j].hasBeenInvoked == false) {
+								itemObject.trigger[j].hasBeenInvoked = true;
+								System.out.println(itemObject.trigger[j].description);
+							}
+							else if ((itemObject.trigger[j].type.equals("permanent"))) {
+								itemObject.trigger[j].hasBeenInvoked = true;
+								System.out.println(itemObject.trigger[j].description);
+							}
+							//System.out.println(itemObject.trigger[j].description);
 						}
 					}
 				}
@@ -127,7 +147,17 @@ public class mapComponent {
 								&& contObject.trigger[j].condition[k].object != null
 								&& contObject.trigger[j].condition[k].status != null
 								&& contObject.trigger[j].condition[k].status.equals(status)) {
-							System.out.println(contObject.trigger[j].description);
+							if ((contObject.trigger[j].type == null
+									|| contObject.trigger[j].type.equals("single"))
+									&& contObject.trigger[j].hasBeenInvoked == false) {
+								contObject.trigger[j].hasBeenInvoked = true;
+								System.out.println(contObject.trigger[j].description);
+							}
+							else if ((contObject.trigger[j].type.equals("permanent"))) {
+								contObject.trigger[j].hasBeenInvoked = true;
+								System.out.println(contObject.trigger[j].description);
+							}
+							//System.out.println(contObject.trigger[j].description);
 						}
 					}
 				}
@@ -143,7 +173,16 @@ public class mapComponent {
 								&& creatureObject.trigger[j].condition[k].object != null
 								&& creatureObject.trigger[j].condition[k].status != null
 								&& creatureObject.trigger[j].condition[k].status.equals(status)) {
-							System.out.println(creatureObject.trigger[j].description);
+							if ((creatureObject.trigger[j].type == null
+									|| creatureObject.trigger[j].type.equals("single"))
+									&& creatureObject.trigger[j].hasBeenInvoked == false) {
+								creatureObject.trigger[j].hasBeenInvoked = true;
+								System.out.println(creatureObject.trigger[j].description);
+							}
+							else if ((creatureObject.trigger[j].type.equals("permanent"))) {
+								creatureObject.trigger[j].hasBeenInvoked = true;
+								System.out.println(creatureObject.trigger[j].description);
+							}
 						}
 					}
 				}
