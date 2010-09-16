@@ -1,13 +1,15 @@
 import java.util.List;
 
 public class creature extends mapComponent {
-	public String vulnerability;
-	public attack attack;
+	public String vulnerability = null;
+	public String status = null;
+	public attack attack = null;
 	public zorkTrigger[] trigger;
 	
-	public creature(String n, String t, String v, attack a, zorkTrigger[] zt) {
+	public creature(String n, String t, String v, String st, attack a, zorkTrigger[] zt) {
 		super(n, t);
 		vulnerability = v;
+		status = st;
 		attack = a;
 		trigger = zt;
 	}
@@ -41,6 +43,13 @@ public class creature extends mapComponent {
 						if (this.trigger[i].condition[i].has != null && this.trigger[i].condition[j].has.equals("no")) {
 							// Command overridden if item is not in inventory
 							if (!currentInventory.contains(this.trigger[i].condition[j].object)) {
+								System.out.println(this.trigger[i].description);
+								this.trigger[i].hasBeenInvoked = true;
+								return true;
+							}
+						}
+						else if (this.trigger[i].condition[i].has != null && this.trigger[i].condition[j].has.equals("yes")) {
+							if (currentInventory.contains(this.trigger[i].condition[j].object)) {
 								System.out.println(this.trigger[i].description);
 								this.trigger[i].hasBeenInvoked = true;
 								return true;
