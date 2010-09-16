@@ -32,41 +32,12 @@ public class zorkItem extends mapComponent {
 	}
 	
 	public List<mapComponent> activate(List<mapComponent> map) {
-		System.out.println(this.turnon.print);
+		System.out.println("You activate the " + this.name);
+		if (this.turnon.print != null) {
+			System.out.println(this.turnon.print);
+		}
 		map = takeAction(map, this.turnon.action);
-		// Moved to mapComponent.java
-		/*for (int i = 0; i < this.turnon.action.length; i++) {
-			if (this.turnon.action[i] != null) {
-				String[] btsCommand = this.turnon.action[i].split(" ");
-				if (btsCommand[0].equals("Update")) {
-					// Syntax: Update (...) to (...)
-					((zorkItem) findObject(map, btsCommand[1], "item")).status = btsCommand[3];
-					//(List<mapComponent> map).searchForTrigger(map, btsCommand[1]);
-					searchForTrigger(map, btsCommand[1], btsCommand[3]);
-				}
-				else if (btsCommand[0].equals("Add")) {
-					// Syntax: Add (...) to (...)
-					// Need to search for room first
-					if (((room) findObject(map, btsCommand[3], "room")) != null) {
-						((room) findObject(map, btsCommand[3], "room")).addItem(btsCommand[1]);
-					}
-					// Then search for container, if hasn't found in room
-					else if (((zorkContainer) findObject(map, btsCommand[3], "container")) != null) {
-						((zorkContainer) findObject(map, btsCommand[3], "container")).addItem(btsCommand[1]);
-					}
-				}
-				else if (btsCommand[0].equals("Delete")) {
-					// Syntax: Delete (...)
-					String[] objectType = {"room", "item", "container", "creature"};
-					for (int j = 0; j < objectType.length; j++) {
-						if (findObject(map, btsCommand[1], objectType[j]) != null && findObject(map, btsCommand[1], objectType[j]).name.equals(btsCommand[1])) {
-							map.remove(findObject(map, btsCommand[1], objectType[j]));
-						}
-					}
-				}
-				// TODO: Game Over
-			}
-		}*/
+		
 		return map;
 	}
 }

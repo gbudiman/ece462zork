@@ -52,6 +52,7 @@ public class XMLReader {
 		creature temp = new creature(XMLGetValue(parent, "name")
 						, ((Node) parent).getNodeName()
 						, XMLGetValue(parent, "vulnerability")
+						, XMLGetValue(parent, "status")
 						, XMLAttachAttack(parent)
 						, XMLAttachTrigger(parent));
 		mapContainer.add(temp);
@@ -89,6 +90,7 @@ public class XMLReader {
 								, ((Node) parent).getNodeName()
 								, XMLGetValue(parent, "type")
 								, XMLGetValue(parent, "description")
+								, XMLGetValue(parent, "status")
 								, XMLGetList(parent, "item")
 								, XMLGetList(parent, "container")
 								, XMLGetBorder(parent)

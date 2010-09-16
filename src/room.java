@@ -4,16 +4,18 @@ public class room extends mapComponent {
 	// Derived class of room
 	public String description = null;
 	public String roomType = null;
+	public String status = null;
 	public List<String> item = new ArrayList<String>();
 	public zorkBorder[] border = new zorkBorder[4];
 	public List<String> creatures = new ArrayList<String>();
 	public List<String> container = new ArrayList<String>();
 	protected zorkTrigger[] trigger = new zorkTrigger[10];
 	
-	public room (String n, String t, String rT, String d, List<String> i, List<String> c, zorkBorder[] b, zorkTrigger[] trig, List<String> zc) {
+	public room (String n, String t, String rT, String d, String st, List<String> i, List<String> c, zorkBorder[] b, zorkTrigger[] trig, List<String> zc) {
 		super(n, t);
 		description = d;
 		roomType = rT;
+		status = st;
 		item = i;
 		container = c;
 		border = b;
@@ -118,12 +120,7 @@ public class room extends mapComponent {
 	}
 	
 	public void addItem(String newItem) {
-		/*for (int i = 0; i < this.item.length; i++) {
-			if (this.item[i] == null) {
-				this.item[i] = newItem;
-				i = this.item.length; // immediately exit
-			}
-		}*/
+		// Add new item to current room
 		this.item.add(newItem);
 	}
 	
@@ -139,22 +136,13 @@ public class room extends mapComponent {
 	}
 	
 	public boolean contains(String type, String seek) {
+		// Returns whether sought creature/container exists in the current room
 		if (type.equals("creature")) {
-			/*for (int i = 0; i < this.creatures.length; i++) {
-				if (this.creatures[i] != null && this.creatures[i].equals(seek)) {
-					return true;
-				}
-			}*/
 			if (this.creatures.contains(seek)) {
 				return true;
 			}
 		}
 		else if (type.equals("container")) {
-			/*for (int i = 0; i < this.container.length; i++) {
-				if (this.container[i] != null && this.container[i].equals(seek)) {
-					return true;
-				}
-			}*/
 			if (this.container.contains(seek)) {
 				return true;
 			}

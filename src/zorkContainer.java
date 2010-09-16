@@ -38,7 +38,12 @@ public class zorkContainer extends mapComponent {
 	
 	public void open() {
 		this.takeAble = true;
-		System.out.println(this.name + " contains " + this.item);
+		if (this.item == null) {
+			System.out.println(this.name + " is empty");
+		}
+		else {
+			System.out.println(this.name + " contains " + this.item);
+		}
 	}
 	
 	public boolean take(List<String> inventory) {

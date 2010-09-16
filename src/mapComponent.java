@@ -42,10 +42,14 @@ public class mapComponent {
 					if ((zorkItem) findObject(map, btsCommand[1], "item") != null) {
 						((zorkItem) findObject(map, btsCommand[1], "item")).status = btsCommand[3];
 					}
+					else if ((room) findObject(map, btsCommand[1], "room") != null) {
+						((room) findObject(map, btsCommand[1], "room")).status = btsCommand[3];
+					}
 					else if ((zorkContainer) findObject(map, btsCommand[1], "container") != null) {
-						//System.out.print("Updating " + ((zorkContainer) findObject(map, btsCommand[1], "container")).status);
 						((zorkContainer) findObject(map, btsCommand[1], "container")).status = btsCommand[3];
-						//System.out.println(" to" + ((zorkContainer) findObject(map, btsCommand[1], "container")).status);
+					}
+					else if ((room) findObject(map, btsCommand[1], "creature") != null) {
+						((creature) findObject(map, btsCommand[1], "creature")).status = btsCommand[3];
 					}
 					
 					//(List<mapComponent> map).searchForTrigger(map, btsCommand[1]);
@@ -64,12 +68,20 @@ public class mapComponent {
 				}
 				else if (btsCommand[0].equals("Delete")) {
 					// Syntax: Delete (...)
-					String[] objectType = {"room", "item", "container", "creature"};
+					/*String[] objectType = {"room", "item", "container", "creature"};
 					for (int j = 0; j < objectType.length; j++) {
 						if (findObject(map, btsCommand[1], objectType[j]) != null && findObject(map, btsCommand[1], objectType[j]).name.equals(btsCommand[1])) {
+							//System.out.println("*** " + objectType[j] + " " + btsCommand[1] + " removed");
 							map.remove(findObject(map, btsCommand[1], objectType[j]));
+							((room) map).creatures.remove(btsCommand[1]);
+							System.out.println("Searching for: " + ((room) findObject(map, "MainCavern", "room")).creatures);
 						}
-					}
+					}*/
+					// Brute-force deleting matching objects
+					((room) map).item.remove(btsCommand[1]);
+					((room) map).creatures.remove(btsCommand[1]);
+					((room) map).container.remove(btsCommand[1]);
+					map.remove(btsCommand[1]);
 				}
 				// TODO: Game Over
 			}
