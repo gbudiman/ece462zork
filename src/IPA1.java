@@ -90,10 +90,19 @@ public class IPA1 {
 							System.out.println("Can't go there [" + command + "]");
 						}
 						else {
-							currentRoom = ((room) findObject(mapContainer, currentRoom, "room")).zorkMove(command);
-							// Only print room description when it has one
-							if (((room) findObject(mapContainer, currentRoom, "room")).description != null) {
-								System.out.println(((room) findObject(mapContainer, currentRoom, "room")).description);
+							String testNextRoom = null;
+							testNextRoom = ((room) findObject(mapContainer, currentRoom, "room")).zorkMove(command);
+							if ((room) findObject(mapContainer, testNextRoom, "room") == null) {
+								System.out.println("Oops... Room " 
+										+ ((room) findObject(mapContainer, currentRoom, "room")).zorkMove(command) 
+										+ " no longer exists. You're screwed!");
+							}
+							else {
+								currentRoom = testNextRoom;
+								// Only print room description when it has one
+								if (((room) findObject(mapContainer, currentRoom, "room")).description != null) {
+									System.out.println(((room) findObject(mapContainer, currentRoom, "room")).description);
+								}
 							}
 						}
 					}
@@ -274,7 +283,7 @@ public class IPA1 {
 					break;
 				}
 				else if (command.matches(patternQuery)) {
-					System.out.println("Programmer-defined command for inspecting room");
+					System.out.println("Programmer-defined command for inspecting room: ");
 					room inspectedRoom = (room) findObject(mapContainer, currentRoom, "room");
 					System.out.println("Monsters: " + inspectedRoom.creatures);
 					System.out.println("Containers: " + inspectedRoom.container);
@@ -299,7 +308,7 @@ public class IPA1 {
 		boolean isFound = false;
 		ListIterator<mapComponent> iterator = mapContainer.listIterator();
 		while (iterator.hasNext() && !isFound) {
-			if (((mapComponent) iterator.next()).name.equals("Entrance")) {
+			if ((iterator.next()).name.equals("Entrance")) {
 				iterator.previous();
 				System.out.println(((room) iterator.next()).description);
 				isFound = true;

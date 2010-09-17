@@ -1,6 +1,8 @@
+import java.util.List;
+
 public class zorkTrigger {
-	public String type;
-	public String command;
+	public String type = null;
+	public String command = null;
 	public zorkCondition[] condition;
 	public String description = null;
 	public String[] action = null;
@@ -30,5 +32,17 @@ public class zorkTrigger {
 				condition[i].info();
 			}
 		}
+	}
+	
+	public boolean checkCondition(List<String> inventory, List<mapComponent> map) {
+		boolean result = false;
+		if (this.condition != null) {
+			for (int i = 0; i < this.condition.length; i++) {
+				if (this.condition[i] != null) {
+					result = this.condition[i].assess(inventory, map);
+				}
+			}
+		}
+		return result;
 	}
 }

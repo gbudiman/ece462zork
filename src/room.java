@@ -46,8 +46,31 @@ public class room extends mapComponent {
 		System.out.println("=================");
 	}
 	
+	public zorkTrigger hasCommandTrigger(String reqCommand) {
+		for (int i = 0; i < this.trigger.length; i++) {
+			if (this.trigger[i] != null
+					&& this.trigger[i].command != null
+					&& this.trigger[i].command.equals(reqCommand)) {
+				// Trigger is of type single
+				if (this.trigger[i].type != null) {
+					if (this.trigger[i].type.equals("single")) {
+						if (this.trigger[i].hasBeenInvoked) {
+							return null;
+						}
+						else {
+							return this.trigger[i];
+						}
+					}
+				}
+				// Trigger is permanent
+				return this.trigger[i];
+			}
+		}
+		return null;
+	}
+	
 	// Moved to mapComponent.java
-	public boolean checkTrigger(String command, List<String> currentInventory, List<mapComponent> map) {
+	/*public boolean checkTrigger(String command, List<String> currentInventory, List<mapComponent> map) {
 		if (this.trigger == null) {
 			return false;
 		}
@@ -94,15 +117,15 @@ public class room extends mapComponent {
 							return true;
 						}
 					}
-					/*else {
+					else {
 						System.out.println("Unhandled room.checkTrigger");
-					}*/
+					}
 				}
 			}
 		}
 		
 		return false;
-	}
+	}*/
 	
 	public String zorkMove(String command) {
 		//System.out.println("Border 0" + this.border[0].direction);

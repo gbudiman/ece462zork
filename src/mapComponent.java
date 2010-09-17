@@ -68,25 +68,40 @@ public class mapComponent {
 				}
 				else if (btsCommand[0].equals("Delete")) {
 					// Syntax: Delete (...)
-					/*String[] objectType = {"room", "item", "container", "creature"};
+					String[] objectType = {"room", "item", "container", "creature"};
+					// This block will delete the object
 					for (int j = 0; j < objectType.length; j++) {
 						if (findObject(map, btsCommand[1], objectType[j]) != null && findObject(map, btsCommand[1], objectType[j]).name.equals(btsCommand[1])) {
 							//System.out.println("*** " + objectType[j] + " " + btsCommand[1] + " removed");
 							map.remove(findObject(map, btsCommand[1], objectType[j]));
-							((room) map).creatures.remove(btsCommand[1]);
-							System.out.println("Searching for: " + ((room) findObject(map, "MainCavern", "room")).creatures);
+							//((room) map).creatures.remove(btsCommand[1]);
+							//System.out.println("Searching for: " + ((room) findObject(map, "MainCavern", "room")).creatures);
 						}
-					}*/
-					// Brute-force deleting matching objects
-					((room) map).item.remove(btsCommand[1]);
-					((room) map).creatures.remove(btsCommand[1]);
-					((room) map).container.remove(btsCommand[1]);
+					}
+					
+					// First, find if any room matches the object to delete
 					map.remove(btsCommand[1]);
+					
+					// We still need to delete reference from the room it is on
+					ListIterator<mapComponent> li = map.listIterator();
+					while (li.hasNext()) {
+						// Map Component under inspection
+						mapComponent mcui = li.next();
+						if (mcui.type.equals("room")) {
+							((room) mcui).creatures.remove(btsCommand[1]);
+							((room) mcui).item.remove(btsCommand[1]);
+							((room) mcui).container.remove(btsCommand[1]);
+						}
+					}
 				}
 				// TODO: Game Over
 			}
 		}
 		return map;
+	}
+	
+	public void removeCreature(String ctr) {
+		((room) this).creatures.remove(ctr);
 	}
 	
 	public void searchForTrigger(List<mapComponent> map, String seek, String status) {
@@ -200,17 +215,20 @@ public class mapComponent {
 				}
 			}
 		}
-		/*for (int j = 0; j < objectType.length; j++) {
-			if (findObject(map, seek, objectType[j]) != null && findObject(map, seek, objectType[j]).name.equals(seek)) {
-				if (j == 0) {
-					room tRoom = (room) findObject(map, seek, objectType[j]);
-					for (int i = 0; i < tRoom.trigger.length; i++) {
-						if (tRoom.trigger[i] != null && tRoom.trigger[i].condition.object != null) {
-							if (tRoom.trigger[i].condition.object.equals(anObject))
-						}
-					}
+	}
+	
+	public boolean checkTrigger(String command, List<String> currentItem, List<mapComponent> map) {
+		boolean result = false;
+		if (this.type.equals("room")) {
+			if (((room) findObject(map, this.name, "room")).hasCommandTrigger(command) != null) {
+				result = (((room) findObject(map, this.name, "room")).hasCommandTrigger(command).checkCondition(currentItem, map));
+				if (result) {
+					System.out.println(((room) findObject(map, this.name, "room")).hasCommandTrigger(command).description);
 				}
 			}
-		}*/
+		}
+		return result;
 	}
+	
+	
 }
