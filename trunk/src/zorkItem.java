@@ -40,4 +40,26 @@ public class zorkItem extends mapComponent {
 		
 		return map;
 	}
+	
+	public zorkTrigger hasCommandTrigger(String reqCommand) {
+		for (int i = 0; i < this.trigger.length; i++) {
+			if (this.trigger[i] != null
+					&& this.trigger[i].command != null
+					&& this.trigger[i].command.equals(reqCommand)) {
+				// Trigger is of type single
+				if (this.trigger[i].type != null
+						|| this.trigger[i].type.equals("single")) {
+					if (this.trigger[i].hasBeenInvoked) {
+						return null;
+					}
+					else {
+						return this.trigger[i];
+					}
+				}
+				// Trigger is permanent
+				return this.trigger[i];
+			}
+		}
+		return null;
+	}
 }
