@@ -175,6 +175,9 @@ public class XMLReader {
 			if (parent.item(i).getNodeType() != Node.TEXT_NODE
 					&& (parent.item(i).getNodeName().equals("trigger"))) {
 				NodeList triggerNode = parent.item(i).getChildNodes();
+				// Re-initialize variables for different triggers
+				cond = new zorkCondition[10];
+				conditionCount = 0;
 				for (int j = 0; j < triggerNode.getLength(); j++) {
 					if (triggerNode.item(j).getNodeType() != Node.TEXT_NODE) {
 						if (triggerNode.item(j).getNodeName().equals("type")) {

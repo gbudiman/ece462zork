@@ -53,7 +53,7 @@ public class mapComponent {
 					}
 					
 					//(List<mapComponent> map).searchForTrigger(map, btsCommand[1]);
-					searchForTrigger(map, btsCommand[1], btsCommand[3]);
+					//searchForTrigger(map, btsCommand[1], btsCommand[3]);
 				}
 				else if (btsCommand[0].equals("Add")) {
 					// Syntax: Add (...) to (...)
@@ -68,36 +68,11 @@ public class mapComponent {
 				}
 				else if (btsCommand[0].equals("Delete")) {
 					// Syntax: Delete (...)
-					/*String[] objectType = {"room", "item", "container", "creature"};
-					// This block will delete the object
-					for (int j = 0; j < objectType.length; j++) {
-						if (findObject(map, btsCommand[1], objectType[j]) != null && findObject(map, btsCommand[1], objectType[j]).name.equals(btsCommand[1])) {
-							//System.out.println("*** " + objectType[j] + " " + btsCommand[1] + " removed");
-							map.remove(findObject(map, btsCommand[1], objectType[j]));
-							//((room) map).creatures.remove(btsCommand[1]);
-							//System.out.println("Searching for: " + ((room) findObject(map, "MainCavern", "room")).creatures);
-						}
-					}
-					
-					// First, find if any room matches the object to delete
-					map.remove(btsCommand[1]);*/
 					
 					((room) findObject(map, currentRoom, "room")).creatures.remove(btsCommand[1]);
 					((room) findObject(map, currentRoom, "room")).item.remove(btsCommand[1]);
 					((room) findObject(map, currentRoom, "room")).container.remove(btsCommand[1]);
 					((room) findObject(map, currentRoom, "room")).detachBorder(btsCommand[1]);
-					// Delete reference from the room it is on
-					/*ListIterator<mapComponent> li = map.listIterator();
-					while (li.hasNext()) {
-						// Map Component under inspection
-						mapComponent mcui = li.next();
-						if (mcui.type.equals("room")) {
-							((room) mcui).creatures.remove(btsCommand[1]);
-							((room) mcui).item.remove(btsCommand[1]);
-							((room) mcui).container.remove(btsCommand[1]);
-							((room) mcui).detachBorder(btsCommand[1]);
-						}
-					}*/
 				}
 				else if (actionArray[i].equals("Game Over")) {
 					System.out.println("Victory!");
@@ -112,7 +87,7 @@ public class mapComponent {
 		((room) this).creatures.remove(ctr);
 	}
 	
-	public void searchForTrigger(List<mapComponent> map, String seek, String status) {
+	/*public void searchForTrigger(List<mapComponent> map, String seek, String status) {
 		//String[] objectType = {"room", "item", "container", "creature"};
 		Boolean isFound = false;
 		ListIterator<mapComponent> i = map.listIterator();
@@ -223,20 +198,105 @@ public class mapComponent {
 				}
 			}
 		}
-	}
+	}*/
 	
 	public boolean checkTrigger(String command, List<String> currentItem, List<mapComponent> map) {
 		boolean result = false;
 		if (this.type.equals("room")) {
 			if (((room) findObject(map, this.name, "room")).hasCommandTrigger(command) != null) {
 				result = (((room) findObject(map, this.name, "room")).hasCommandTrigger(command).checkCondition(currentItem, map));
-				if (result) {
+				/*if (result) {
 					System.out.println(((room) findObject(map, this.name, "room")).hasCommandTrigger(command).description);
-				}
+				}*/
 			}
 		}
 		return result;
 	}
 	
-	
+	public List<mapComponent> searchForTrigger(List<mapComponent> map, List<String> inventory, String currentRoom) {
+		// begin by searching for item first
+		ListIterator<String> itemInspected = ((room) this).item.listIterator();
+		boolean trigger = false;
+		while (itemInspected.hasNext()) {
+			String elementInspected = itemInspected.next();
+			if (((zorkItem) findObject(map, elementInspected, "item")).trigger != null) {
+				zorkTrigger[] elementTrigger = ((zorkItem) findObject(map, elementInspected, "room")).trigger;
+				for (int i = 0; i < elementTrigger.length; i++) {
+					if (elementTrigger[i] != null) {
+						trigger = elementTrigger[i].checkCondition(inventory, map);
+						if (trigger)  {
+							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
+								if (!elementTrigger[i].hasBeenInvoked) {
+									System.out.println(elementTrigger[i].description);
+									elementTrigger[i].hasBeenInvoked = true;
+									map = takeAction(map, elementTrigger[i].action, currentRoom);
+								}
+							}
+							else {
+								System.out.println(elementTrigger[i].description);
+								elementTrigger[i].hasBeenInvoked = true;
+								map = takeAction(map, elementTrigger[i].action, currentRoom);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		// Then containers
+		itemInspected = ((room) this).container.listIterator();
+		trigger = false;
+		while (itemInspected.hasNext()) {
+			String elementInspected = itemInspected.next();
+			if (((zorkContainer) findObject(map, elementInspected, "container")).trigger != null) {
+				zorkTrigger[] elementTrigger = ((zorkContainer) findObject(map, elementInspected, "container")).trigger;
+				for (int i = 0; i < elementTrigger.length; i++) {
+					if (elementTrigger[i] != null) {
+						trigger = elementTrigger[i].checkCondition(inventory, map);
+						if (trigger)  {
+							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
+								if (!elementTrigger[i].hasBeenInvoked) {
+									elementTrigger[i].hasBeenInvoked = true;
+									map = takeAction(map, elementTrigger[i].action, currentRoom);
+								}
+							}
+							else {
+								elementTrigger[i].hasBeenInvoked = true;
+								map = takeAction(map, elementTrigger[i].action, currentRoom);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		// Then creature
+		itemInspected = ((room) this).creatures.listIterator();
+		trigger = false;
+		while (itemInspected.hasNext()) {
+			String elementInspected = itemInspected.next();
+			if (((creature) findObject(map, elementInspected, "creature")).trigger != null) {
+				zorkTrigger[] elementTrigger = ((creature) findObject(map, elementInspected, "creature")).trigger;
+				for (int i = 0; i < elementTrigger.length; i++) {
+					if (elementTrigger[i] != null) {
+						trigger = elementTrigger[i].checkCondition(inventory, map);
+						if (trigger)  {
+							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
+								if (!elementTrigger[i].hasBeenInvoked) {
+									elementTrigger[i].hasBeenInvoked = true;
+									map = takeAction(map, elementTrigger[i].action, currentRoom);
+								}
+							}
+							else {
+								elementTrigger[i].hasBeenInvoked = true;
+								map = takeAction(map, elementTrigger[i].action, currentRoom);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return map;
+	}
 }

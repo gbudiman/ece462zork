@@ -48,16 +48,21 @@ public class room extends mapComponent {
 	
 	public zorkTrigger hasCommandTrigger(String reqCommand) {
 		for (int i = 0; i < this.trigger.length; i++) {
+			/*if (this.trigger[i] != null && this.trigger[i].command != null) {
+				System.out.print("Analyzing trigger: " + this.trigger[i].command + " for " + reqCommand + ": ");
+			}*/
 			if (this.trigger[i] != null
 					&& this.trigger[i].command != null
-					&& this.trigger[i].command.equals(reqCommand)) {
+					&& this.trigger[i].command.equals(reqCommand.split(" ")[0])) {
 				// Trigger is of type single
 				if (this.trigger[i].type != null) {
 					if (this.trigger[i].type.equals("single")) {
 						if (this.trigger[i].hasBeenInvoked) {
+							//System.out.println("passed...");
 							return null;
 						}
 						else {
+							//System.out.println("Overridden!");
 							return this.trigger[i];
 						}
 					}

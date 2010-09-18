@@ -42,6 +42,14 @@
       </condition>
       <print>lock needs a key... not to mention you don't want to get too close to that side of the room... there's something in that corner...</print>
     </trigger>
+	<trigger>
+<command>attack</command>
+<condition>
+<object>torch</object>
+<status>lit</status>
+</condition>
+<print>Attacking empty air?</print>
+	</trigger>
   </room>
   <room>
     <type>exit</type>
@@ -59,8 +67,6 @@
     <turnon>
       <print>the torch has erupted into a menacing inferno</print>
       <action>Update torch to inferno</action>
-	<action>Add zasd to Entrance</action>
-	<action>Game Over</action>
     </turnon>
   </item>
   <item>
