@@ -142,10 +142,10 @@ public class IPA1 {
 							while (i.hasNext() && !itemFound) {
 								String inspection = i.next();
 								if (((zorkContainer) findObject(mapContainer, inspection, "container")).item != null
-										&& ((zorkContainer) findObject(mapContainer, inspection, "container")).item.equals(command.split(" ")[1])) {
+										&& ((zorkContainer) findObject(mapContainer, inspection, "container")).item.contains(command.split(" ")[1])) {
 									// User shouldn't see this message
 									// But this is for information purpose only
-									if (!((zorkContainer) findObject(mapContainer, inspection, "container")).take(currentItem)) {
+									if (!((zorkContainer) findObject(mapContainer, inspection, "container")).take(currentItem, command.split(" ")[1])) {
 										System.out.println("Can't take item from unopened container");
 									}
 									else {
@@ -230,7 +230,7 @@ public class IPA1 {
 					}
 					else {
 						if (((room) findObject(mapContainer, currentRoom, "room")).contains("container", command.split(" ")[3])) {
-							mapContainer = ((zorkContainer) findObject(mapContainer, command.split(" ")[3], "container")).put(mapContainer, currentItem, command.split(" ")[1]);
+							mapContainer = ((zorkContainer) findObject(mapContainer, command.split(" ")[3], "container")).put(mapContainer, currentItem, command.split(" ")[1], currentRoom);
 						}
 						else {
 							System.out.println("No such container");
@@ -246,7 +246,7 @@ public class IPA1 {
 					}
 					else {
 						if (currentItem.contains(command.split(" ")[2])) {
-							mapContainer = ((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).activate(mapContainer);
+							mapContainer = ((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).activate(mapContainer, currentRoom);
 						}
 						else {
 							System.out.println("Can't turn on non-inventorized item [" + command.split(" ")[2] + "]");
@@ -266,7 +266,7 @@ public class IPA1 {
 							//System.out.println("attacking...");
 							if (currentItem.contains(command.split(" ")[3])) {
 								mapContainer = 
-									((creature) findObject(mapContainer, command.split(" ")[1], "creature")).attack(mapContainer, currentItem, command.split(" ")[3]);
+									((creature) findObject(mapContainer, command.split(" ")[1], "creature")).attack(mapContainer, currentItem, command.split(" ")[3], currentRoom);
 							}
 							else {
 								System.out.println("Item " + command.split(" ")[3] + " is not in your inventory");
