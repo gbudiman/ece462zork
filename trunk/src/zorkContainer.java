@@ -75,7 +75,7 @@ public class zorkContainer extends mapComponent {
 			else {
 				this.item.add(newItem);
 				inventory.remove(newItem);
-				map = checkTrigger(map, this.trigger, currentRoom);
+				//map = checkTrigger(map, this.trigger, currentRoom);
 			}
 		}
 		else {

@@ -23,7 +23,7 @@ public class zorkCondition {
 		if (this.owner != null
 				&& this.owner.equals("inventory")) {
 			// check inventory
-			if (this.has.equals("yes")) {
+			if (this.has != null && this.has.equals("yes")) {
 				// If player's inventory contains this object, override
 				if (inventory.contains(this.object)) {
 					return true;
@@ -50,7 +50,7 @@ public class zorkCondition {
 				if (((zorkContainer) findObject(map, this.owner, "container")) != null) {
 					zorkContainer ciq = ((zorkContainer) findObject(map, this.owner, "container"));
 					if (this.has.equals("yes")) {
-						if (ciq.item.equals(this.object)) {
+						if (ciq.item.contains(this.object)) {
 							return true;
 						}
 						else {
@@ -58,7 +58,7 @@ public class zorkCondition {
 						}
 					}
 					else {
-						if (!ciq.item.equals(this.object)) {
+						if (!ciq.item.contains(this.object)) {
 							return true;
 						}
 						else {
@@ -89,12 +89,14 @@ public class zorkCondition {
 			}
 			// Otherwise, all objects can have status
 			else {
+				//System.out.println("+>> " + this.object);
 				if (((room) findObject(map, this.object, "room")) != null) {
 					if (this.status.equals(((room) findObject(map, this.object, "room")).status)) {
 						return true;
 					}
 				}
 				else if (((zorkItem) findObject(map, this.object, "item")) != null) {
+					//System.out.println("+>>>" + ((zorkItem) findObject(map, this.object, "item")).status + " expected " + this.status);
 					if (this.status.equals(((zorkItem) findObject(map, this.object, "item")).status)) {
 						return true;
 					}

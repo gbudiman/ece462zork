@@ -36,10 +36,32 @@ public class zorkTrigger {
 	
 	public boolean checkCondition(List<String> inventory, List<mapComponent> map) {
 		boolean result = false;
+		//System.out.println("++checking condition for trigger " + this.command);
 		if (this.condition != null) {
 			for (int i = 0; i < this.condition.length; i++) {
 				if (this.condition[i] != null) {
 					result = this.condition[i].assess(inventory, map);
+					//System.out.println("+---" + result + " " + this.condition[i].object);
+					if (this.type == null || this.type.equals("single")) {
+						if (!this.hasBeenInvoked) {
+							if (result && this.description != null) {
+								System.out.println(this.description);
+								return result;
+							}
+							else if (result) {
+								return result;
+							}
+						}
+					}
+					else {
+						if (result && this.description != null) {
+							System.out.println(this.description);
+							return result;
+						}
+						else if (result) {
+							return result;
+						}
+					}
 				}
 			}
 		}

@@ -76,13 +76,14 @@ public class IPA1 {
 			System.out.print("> ");
 			try {
 				command = br.readLine();
+				// Check for command override on all command
+				overridden = ((room) findObject(mapContainer, currentRoom, "room")).checkTrigger(command, currentItem, mapContainer);
 				//System.out.println("Command caught: " + command);
 				
 				/*********************************************
 				 * Move command. Accepts n|s|e|w ONLY!
 				 *********************************************/
 				if (command.matches(patternMove)) {
-					overridden = ((room) findObject(mapContainer, currentRoom, "room")).checkTrigger(command, currentItem, mapContainer);
 					// Command is not overridden by trigger, so execute command
 					if (!overridden) {
 						// if direction does not point to a valid room, cancel the command
@@ -116,7 +117,7 @@ public class IPA1 {
 					if ((currentItem.toArray()).length > 0) {
 						System.out.println("Inventory: " + Arrays.toString(currentItem.toArray()));
 					}
-					else {
+					else if (!overridden) {
 						System.out.println("Inventory is empty");
 					}
 				}
@@ -127,7 +128,7 @@ public class IPA1 {
 					if (command.split(" ").length != 2) {
 						System.out.println("Incorrect command. Usage: take [item]");
 					}
-					else {
+					else if (!overridden) {
 						boolean itemFound = false;
 						// First, check if item exists in current room
 						if (((room) findObject(mapContainer, currentRoom, "room")).item.contains(command.split(" ")[1])) {
@@ -175,18 +176,20 @@ public class IPA1 {
 					if (command.split(" ").length != 2) {
 						System.out.println("Incorrect command. Usage: open [target]");
 					}
-					else if (command.trim().equals("open exit")) {
-						if (((room) findObject(mapContainer, currentRoom, "room")).roomType != null
-								&& ((room) findObject(mapContainer, currentRoom, "room")).roomType.equals("exit")) {
-							exitFound = true;
+					else if (!overridden) {
+						if (command.trim().equals("open exit")) {
+							if (((room) findObject(mapContainer, currentRoom, "room")).roomType != null
+									&& ((room) findObject(mapContainer, currentRoom, "room")).roomType.equals("exit")) {
+								exitFound = true;
+							}
 						}
-					}
-					else if (!((room) findObject(mapContainer, currentRoom, "room")).contains("container", command.split(" ")[1])) {
-						System.out.println("No such container in room " + currentRoom);
-					}
-					else {
-						//System.out.println("opening " + command.split(" ")[1]);
-						((zorkContainer) findObject(mapContainer, command.split(" ")[1], "container")).open();
+						else if (!((room) findObject(mapContainer, currentRoom, "room")).contains("container", command.split(" ")[1])) {
+							System.out.println("No such container in room " + currentRoom);
+						}
+						else {
+							//System.out.println("opening " + command.split(" ")[1]);
+							((zorkContainer) findObject(mapContainer, command.split(" ")[1], "container")).open();
+						}
 					}
 				}
 				/*********************************************
@@ -196,7 +199,7 @@ public class IPA1 {
 					if (command.split(" ").length != 2) {
 						System.out.println("Incorrect command. Usage: read [inventory]");
 					}
-					else {
+					else if (!overridden) {
 						if (currentItem.contains(command.split(" ")[1])) {
 							if (((zorkItem) findObject(mapContainer, command.split(" ")[1], "item")).writing != null) {
 								System.out.println(((zorkItem) findObject(mapContainer, command.split(" ")[1], "item")).writing);
@@ -217,7 +220,7 @@ public class IPA1 {
 					if (command.split(" ").length != 2) {
 						System.out.println("Incorrect command. usage: drop [item]");
 					}
-					else {
+					else if (!overridden) {
 						((room) findObject(mapContainer, currentRoom, "room")).dropItem(currentItem, command.split(" ")[1]);
 					}
 				}
@@ -228,7 +231,7 @@ public class IPA1 {
 					if (command.split(" ").length != 4) {
 						System.out.println("Incorrect command. Usage: put [item] in [target]");
 					}
-					else {
+					else if (!overridden) {
 						if (((room) findObject(mapContainer, currentRoom, "room")).contains("container", command.split(" ")[3])) {
 							mapContainer = ((zorkContainer) findObject(mapContainer, command.split(" ")[3], "container")).put(mapContainer, currentItem, command.split(" ")[1], currentRoom);
 						}
@@ -244,7 +247,7 @@ public class IPA1 {
 					if (command.split(" ").length != 3) {
 						System.out.println("Incorrect command. Usage: turn on [item]");
 					}
-					else {
+					else if (!overridden) {
 						if (currentItem.contains(command.split(" ")[2])) {
 							mapContainer = ((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).activate(mapContainer, currentRoom);
 						}
@@ -261,7 +264,7 @@ public class IPA1 {
 					if (command.split(" ").length != 4) {
 						System.out.println("Incorrect command. Usage: attack [target] with [object]");
 					}
-					else {
+					else if (!overridden) {
 						if (((room) findObject(mapContainer, currentRoom, "room")).contains("creature", command.split(" ")[1])) {
 							//System.out.println("attacking...");
 							if (currentItem.contains(command.split(" ")[3])) {
@@ -291,6 +294,10 @@ public class IPA1 {
 				}
 				else {
 					System.out.println("Unimplemented or unrecognized command");
+				}
+				
+				if (!overridden) {
+					mapContainer = ((mapComponent) findObject(mapContainer, currentRoom, "room")).searchForTrigger(mapContainer, currentItem, currentRoom);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
