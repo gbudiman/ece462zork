@@ -32,7 +32,7 @@ public class mapComponent {
 		return soughtObject;
 	}
 	
-	public List<mapComponent> takeAction(List<mapComponent> map, String[] actionArray, String currentRoom) {
+	public List<mapComponent> takeAction(List<mapComponent> map, String[] actionArray, List<String> inventory, String currentRoom) {
 		for (int i = 0; i < actionArray.length; i++) {
 			if (actionArray[i] != null) {
 				String[] btsCommand = actionArray[i].split(" ");
@@ -80,6 +80,9 @@ public class mapComponent {
 				}
 			}
 		}
+		//System.out.println("<<< re-looping");
+		map = findObject(map, currentRoom, "room").searchForTrigger(map, inventory, currentRoom);
+		//System.out.println(">>> re-looping done");
 		return map;
 	}
 	
@@ -229,13 +232,13 @@ public class mapComponent {
 								if (!elementTrigger[i].hasBeenInvoked) {
 									System.out.println(elementTrigger[i].description);
 									elementTrigger[i].hasBeenInvoked = true;
-									map = takeAction(map, elementTrigger[i].action, currentRoom);
+									map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 								}
 							}
 							else {
 								System.out.println(elementTrigger[i].description);
 								elementTrigger[i].hasBeenInvoked = true;
-								map = takeAction(map, elementTrigger[i].action, currentRoom);
+								map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 							}
 						}
 					}
@@ -257,12 +260,12 @@ public class mapComponent {
 							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
 								if (!elementTrigger[i].hasBeenInvoked) {
 									elementTrigger[i].hasBeenInvoked = true;
-									map = takeAction(map, elementTrigger[i].action, currentRoom);
+									map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 								}
 							}
 							else {
 								elementTrigger[i].hasBeenInvoked = true;
-								map = takeAction(map, elementTrigger[i].action, currentRoom);
+								map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 							}
 						}
 					}
@@ -284,12 +287,12 @@ public class mapComponent {
 							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
 								if (!elementTrigger[i].hasBeenInvoked) {
 									elementTrigger[i].hasBeenInvoked = true;
-									map = takeAction(map, elementTrigger[i].action, currentRoom);
+									map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 								}
 							}
 							else {
 								elementTrigger[i].hasBeenInvoked = true;
-								map = takeAction(map, elementTrigger[i].action, currentRoom);
+								map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 							}
 						}
 					}

@@ -31,12 +31,12 @@ public class zorkItem extends mapComponent {
 		System.out.println("=================");
 	}
 	
-	public List<mapComponent> activate(List<mapComponent> map, String currentRoom) {
+	public List<mapComponent> activate(List<mapComponent> map, List<String> inventory, String currentRoom) {
 		System.out.println("You activate the " + this.name);
 		if (this.turnon.print != null) {
 			System.out.println(this.turnon.print);
 		}
-		map = takeAction(map, this.turnon.action, currentRoom);
+		map = takeAction(map, this.turnon.action, inventory, currentRoom);
 		
 		return map;
 	}
