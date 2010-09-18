@@ -86,7 +86,7 @@ public class creature extends mapComponent {
 					&& ((zorkItem) findObject(map, weapon, "item")).status.equals(this.attack.condition.status)) {
 				System.out.println("You assault the " + this.name + " with the " + weapon);
 				System.out.println(this.attack.print);
-				map = takeAction(map, this.attack.action, currentRoom);
+				map = takeAction(map, this.attack.action, item, currentRoom);
 			}	
 			else {
 				System.out.println("Unmatching " + weapon + " status");

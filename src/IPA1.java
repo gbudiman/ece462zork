@@ -249,7 +249,7 @@ public class IPA1 {
 					}
 					else if (!overridden) {
 						if (currentItem.contains(command.split(" ")[2])) {
-							mapContainer = ((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).activate(mapContainer, currentRoom);
+							mapContainer = ((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).activate(mapContainer, currentItem, currentRoom);
 						}
 						else {
 							System.out.println("Can't turn on non-inventorized item [" + command.split(" ")[2] + "]");

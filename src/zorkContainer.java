@@ -96,7 +96,7 @@ public class zorkContainer extends mapComponent {
 		return map;
 	}
 	
-	public List<mapComponent> checkTrigger(List<mapComponent> map, zorkTrigger[] t, String currentRoom) {
+	public List<mapComponent> checkTrigger(List<mapComponent> map, List<String> inventory, zorkTrigger[] t, String currentRoom) {
 		for (int i = 0; i < t.length; i++) {
 			for (int j = 0; t[i] != null && j < t[i].condition.length; j++) {
 				if (t[i].condition[j] != null) {
@@ -104,13 +104,13 @@ public class zorkContainer extends mapComponent {
 						room tso = (room) findObject(map, t[i].condition[j].owner, "room");
 						if (t[i].condition[j].has.equals("yes")) {
 							if (tso.contains("item", t[i].condition[j].object)) {
-								map = takeAction(map, t[i].action, currentRoom);
+								map = takeAction(map, t[i].action, inventory, currentRoom);
 								System.out.println(t[i].description);
 							}
 						}
 						else {
 							if (!tso.contains("item", t[i].condition[j].object)){
-								map = takeAction(map, t[i].action, currentRoom);
+								map = takeAction(map, t[i].action, inventory, currentRoom);
 								System.out.println(t[i].description);
 							}
 						}
@@ -119,13 +119,13 @@ public class zorkContainer extends mapComponent {
 						zorkContainer tso = (zorkContainer) findObject(map, t[i].condition[j].owner, "container");
 						if (t[i].condition[j].has.equals("yes")) {
 							if (tso.item.equals(t[i].condition[j].object)) {
-								map = takeAction(map, t[i].action, currentRoom);
+								map = takeAction(map, t[i].action, inventory, currentRoom);
 								System.out.println(t[i].description);
 							}
 						}
 						else {
 							if (!tso.item.equals(t[i].condition[j].object)) {
-								map = takeAction(map, t[i].action, currentRoom);
+								map = takeAction(map, t[i].action, inventory, currentRoom);
 								System.out.println(t[i].description);
 							}
 						}
