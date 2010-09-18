@@ -35,6 +35,7 @@
     </border>
     <trigger>
       <command>n</command>
+      <type>permanent</type>
       <condition>
         <object>lock</object>
         <status>locked</status>
@@ -58,6 +59,8 @@
     <turnon>
       <print>the torch has erupted into a menacing inferno</print>
       <action>Update torch to inferno</action>
+	<action>Add zasd to Entrance</action>
+	<action>Game Over</action>
     </turnon>
   </item>
   <item>

@@ -172,4 +172,14 @@ public class room extends mapComponent {
 		}
 		return false;
 	}
+	
+	public void detachBorder(String adjacentRoom) {
+		for (int i = 0; i < this.border.length; i++) {
+			if (this.border[i] != null
+					&& this.border[i].name != null
+					&& this.border[i].name.equals(adjacentRoom)) {
+				this.border[i] = null;
+			}
+		}
+	}
 }

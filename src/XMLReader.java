@@ -77,7 +77,7 @@ public class XMLReader {
 		zorkContainer tempContainer = new zorkContainer(XMLGetValue(parent, "name")
 									, ((Node) parent).getNodeName()
 									, XMLGetValue(parent, "description")
-									, XMLGetValue(parent, "item")
+									, XMLGetList(parent, "item")
 									, XMLGetValue(parent, "accept")
 									, XMLGetValue(parent, "status")
 									, XMLAttachTrigger(parent));
@@ -227,6 +227,7 @@ public class XMLReader {
 	}
 
 	private zorkBorder[] XMLGetBorder(NodeList parent) {
+		// Return 4-direction borders
 		zorkBorder[] extracted = new zorkBorder[4];
 		int index = 0;
 		

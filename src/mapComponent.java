@@ -32,7 +32,7 @@ public class mapComponent {
 		return soughtObject;
 	}
 	
-	public List<mapComponent> takeAction(List<mapComponent> map, String[] actionArray) {
+	public List<mapComponent> takeAction(List<mapComponent> map, String[] actionArray, String currentRoom) {
 		for (int i = 0; i < actionArray.length; i++) {
 			if (actionArray[i] != null) {
 				String[] btsCommand = actionArray[i].split(" ");
@@ -68,7 +68,7 @@ public class mapComponent {
 				}
 				else if (btsCommand[0].equals("Delete")) {
 					// Syntax: Delete (...)
-					String[] objectType = {"room", "item", "container", "creature"};
+					/*String[] objectType = {"room", "item", "container", "creature"};
 					// This block will delete the object
 					for (int j = 0; j < objectType.length; j++) {
 						if (findObject(map, btsCommand[1], objectType[j]) != null && findObject(map, btsCommand[1], objectType[j]).name.equals(btsCommand[1])) {
@@ -80,10 +80,14 @@ public class mapComponent {
 					}
 					
 					// First, find if any room matches the object to delete
-					map.remove(btsCommand[1]);
+					map.remove(btsCommand[1]);*/
 					
-					// We still need to delete reference from the room it is on
-					ListIterator<mapComponent> li = map.listIterator();
+					((room) findObject(map, currentRoom, "room")).creatures.remove(btsCommand[1]);
+					((room) findObject(map, currentRoom, "room")).item.remove(btsCommand[1]);
+					((room) findObject(map, currentRoom, "room")).container.remove(btsCommand[1]);
+					((room) findObject(map, currentRoom, "room")).detachBorder(btsCommand[1]);
+					// Delete reference from the room it is on
+					/*ListIterator<mapComponent> li = map.listIterator();
 					while (li.hasNext()) {
 						// Map Component under inspection
 						mapComponent mcui = li.next();
@@ -91,10 +95,14 @@ public class mapComponent {
 							((room) mcui).creatures.remove(btsCommand[1]);
 							((room) mcui).item.remove(btsCommand[1]);
 							((room) mcui).container.remove(btsCommand[1]);
+							((room) mcui).detachBorder(btsCommand[1]);
 						}
-					}
+					}*/
 				}
-				// TODO: Game Over
+				else if (actionArray[i].equals("Game Over")) {
+					System.out.println("Victory!");
+					System.exit(0);
+				}
 			}
 		}
 		return map;
