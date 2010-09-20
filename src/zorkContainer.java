@@ -3,12 +3,12 @@ import java.util.List;
 public class zorkContainer extends mapComponent {
 	public String description = null;
 	public List<String> item = null;
-	public String accept = null;
+	public List<String> accept = null;
 	public String status = null;
 	protected zorkTrigger[] trigger;
 	public boolean takeAble = false;
 	
-	public zorkContainer(String n, String t, String d, List<String> i, String a, String s, zorkTrigger[] zt) {
+	public zorkContainer(String n, String t, String d, List<String> i, List<String> a, String s, zorkTrigger[] zt) {
 		super(n, t);
 		description = d;
 		item = i;
@@ -38,7 +38,7 @@ public class zorkContainer extends mapComponent {
 	
 	public void open() {
 		// Open container that has accept condition
-		if (this.accept != null) {
+		if (this.accept.size() > 0) {
 			if (this.item.contains(this.accept)) {
 				this.takeAble = true;
 			}
@@ -68,8 +68,8 @@ public class zorkContainer extends mapComponent {
 	}
 	
 	public List<mapComponent> put(List<mapComponent> map, List<String> inventory, String newItem, String currentRoom) {
-		if (this.accept != null) {
-			if (!this.accept.equals(newItem)) {
+		if (this.accept.size() > 0) {
+			if (!this.accept.contains(newItem)) {
 				System.out.println("Container " + this.name + " only accepts " + this.accept);
 			}
 			else {

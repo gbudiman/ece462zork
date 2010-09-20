@@ -1,13 +1,15 @@
 import java.util.List;
 
 public class creature extends mapComponent {
-	public String vulnerability = null;
+	public List<String> vulnerability = null;
+	public String description = null;
 	public String status = null;
 	public attack attack = null;
 	public zorkTrigger[] trigger;
 	
-	public creature(String n, String t, String v, String st, attack a, zorkTrigger[] zt) {
+	public creature(String n, String t, String d, List<String> v, String st, attack a, zorkTrigger[] zt) {
 		super(n, t);
+		description = d;
 		vulnerability = v;
 		status = st;
 		attack = a;
@@ -23,7 +25,7 @@ public class creature extends mapComponent {
 			}
 		}
 	}
-	public boolean checkTrigger(String command, List<String> currentInventory, List<mapComponent> map) {
+	/*public boolean checkTrigger(String command, List<String> currentInventory, List<mapComponent> map) {
 		if (this.trigger == null) {
 			return false;
 		}
@@ -70,18 +72,18 @@ public class creature extends mapComponent {
 							return true;
 						}
 					}
-					/*else {
+					else {
 						System.out.println("Unhandled creature.checkTrigger");
-					}*/
+					}
 				}
 			}
 		}
 		
 		return false;
-	}
+	}*/
 	
 	public List<mapComponent> attack(List<mapComponent> map, List<String> item, String weapon, String currentRoom) {
-		if (this.vulnerability.equals(weapon)) {
+		if (this.vulnerability.contains(weapon)) {
 			if (item.contains(this.attack.condition.object)
 					&& ((zorkItem) findObject(map, weapon, "item")).status.equals(this.attack.condition.status)) {
 				System.out.println("You assault the " + this.name + " with the " + weapon);

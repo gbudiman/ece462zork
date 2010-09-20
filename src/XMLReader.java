@@ -51,7 +51,8 @@ public class XMLReader {
 			List<mapComponent> mapContainer) {
 		creature temp = new creature(XMLGetValue(parent, "name")
 						, ((Node) parent).getNodeName()
-						, XMLGetValue(parent, "vulnerability")
+						, XMLGetValue(parent, "description")
+						, XMLGetList(parent, "vulnerability")
 						, XMLGetValue(parent, "status")
 						, XMLAttachAttack(parent)
 						, XMLAttachTrigger(parent));
@@ -78,7 +79,7 @@ public class XMLReader {
 									, ((Node) parent).getNodeName()
 									, XMLGetValue(parent, "description")
 									, XMLGetList(parent, "item")
-									, XMLGetValue(parent, "accept")
+									, XMLGetList(parent, "accept")
 									, XMLGetValue(parent, "status")
 									, XMLAttachTrigger(parent));
 		mapContainer.add(tempContainer);
