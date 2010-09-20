@@ -103,10 +103,11 @@ public class XMLReader {
 	private attack XMLAttachAttack(NodeList parent) {
 		// Attach attack to creature
 		attack creatureAttack = null;
-		zorkCondition creatureCondition = null;
+		zorkCondition[] creatureCondition = new zorkCondition[10];
 		String print = null;
 		String[] action = new String[10];
 		int actionCount = 0;
+		int conditionCount = 0;
 		boolean hasAttack = false;
 		
 		for (int i = 0; i < parent.getLength() && !hasAttack; i++) {
@@ -116,7 +117,7 @@ public class XMLReader {
 				NodeList attackNode = parent.item(i).getChildNodes();
 				for (int j = 0; j < attackNode.getLength(); j++) {
 					if (attackNode.item(j).getNodeName().equals("condition")) {
-						creatureCondition = XMLAttachCondition(attackNode.item(j).getChildNodes());
+						creatureCondition[conditionCount++] = XMLAttachCondition(attackNode.item(j).getChildNodes());
 					}
 					else if (attackNode.item(j).getNodeName().equals("print")) {
 						print = attackNode.item(j).getTextContent();

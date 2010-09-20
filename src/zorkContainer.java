@@ -38,22 +38,23 @@ public class zorkContainer extends mapComponent {
 	
 	public void open() {
 		// Open container that has accept condition
-		if (this.accept.size() > 0) {
+		if (this.accept.size() > 0 && !this.takeAble) {
 			if (this.item.contains(this.accept)) {
 				this.takeAble = true;
 			}
 			else {
-				System.out.println("Required item to open container is not present");
+				//System.out.println("Required item to open container is not present");
+				System.out.println("Error");
 			}
 		}
 		// Open "unbound" container
 		else {
 			this.takeAble = true;
 			if (this.item.isEmpty()) {
-				System.out.println(this.name + " is empty");
+				System.out.println(this.name + " is empty.");
 			}
 			else {
-				System.out.println(this.name + " contains " + this.item);
+				System.out.println(this.name + " contains " + this.item.toString().replace("[", "").replace("]", "") + ".");
 			}
 		}
 	}
@@ -70,11 +71,14 @@ public class zorkContainer extends mapComponent {
 	public List<mapComponent> put(List<mapComponent> map, List<String> inventory, String newItem, String currentRoom) {
 		if (this.accept.size() > 0) {
 			if (!this.accept.contains(newItem)) {
-				System.out.println("Container " + this.name + " only accepts " + this.accept);
+				//System.out.println("Container " + this.name + " only accepts " + this.accept);
+				System.out.println("Error");
 			}
 			else {
 				this.item.add(newItem);
 				inventory.remove(newItem);
+				this.takeAble = true;
+				System.out.println("Item " + newItem + " added to " + this.name + ".");
 				//map = checkTrigger(map, this.trigger, currentRoom);
 			}
 		}
@@ -82,14 +86,16 @@ public class zorkContainer extends mapComponent {
 			if (this.takeAble == true) {
 				this.item.add(newItem);
 				if (!inventory.remove(newItem)) {
-					System.out.println(newItem + " is not in your inventory");
+					//System.out.println(newItem + " is not in your inventory");
+					System.out.println("Error");
 				}
 				else {
-					System.out.println("Item " + newItem + " added to " + this.name);
+					System.out.println("Item " + newItem + " added to " + this.name + ".");
 				}
 			}
 			else {
-				System.out.println("Container is still closed");
+				//System.out.println("Container is still closed");
+				System.out.println("Error");
 			}
 		}
 		

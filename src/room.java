@@ -156,10 +156,11 @@ public class room extends mapComponent {
 		if (inventory.contains(itemToDrop)) {
 			this.item.add(itemToDrop);
 			inventory.remove(itemToDrop);
-			System.out.println(itemToDrop + " dropped");
+			System.out.println(itemToDrop + " dropped.");
 		}
 		else {
-			System.out.println("Can't drop item not in your inventory");
+			//System.out.println("Can't drop item not in your inventory");
+			System.out.println("Error");
 		}
 	}
 	
