@@ -67,7 +67,7 @@ public class IPA1 {
 		String patternAttack = "^(attack).*";
 		String patternQuery = "^(q(uery)?)$";
 		String patternQuit = "^(exit|quit|stop)$";
-		System.out.println("Game commencing!");
+		//System.out.println("Game commencing!");
 		boolean overridden = false;
 		
 		currentRoom = zorkCheckEntrance(mapContainer);
@@ -88,15 +88,16 @@ public class IPA1 {
 					if (!overridden) {
 						// if direction does not point to a valid room, cancel the command
 						if (((room) findObject(mapContainer, currentRoom, "room")).zorkMove(command) == null) {
-							System.out.println("Can't go there [" + command + "]");
+							System.out.println("Can't go that way.");
 						}
 						else {
 							String testNextRoom = null;
 							testNextRoom = ((room) findObject(mapContainer, currentRoom, "room")).zorkMove(command);
 							if ((room) findObject(mapContainer, testNextRoom, "room") == null) {
-								System.out.println("Oops... Room " 
+								/*System.out.println("Oops... Room " 
 										+ ((room) findObject(mapContainer, currentRoom, "room")).zorkMove(command) 
-										+ " no longer exists. You're screwed!");
+										+ " no longer exists. You're screwed!");*/
+								System.out.println("Error");
 							}
 							else {
 								currentRoom = testNextRoom;
@@ -115,10 +116,10 @@ public class IPA1 {
 				else if (command.matches(patternInventory)) {
 					// Explicit message if inventory is empty.
 					if ((currentItem.toArray()).length > 0) {
-						System.out.println("Inventory: " + Arrays.toString(currentItem.toArray()));
+						System.out.println("Inventory: " + (Arrays.toString(currentItem.toArray())).replace("[", "").replace("]", ""));
 					}
 					else if (!overridden) {
-						System.out.println("Inventory is empty");
+						System.out.println("Inventory: empty");
 					}
 				}
 				/*********************************************
@@ -126,7 +127,8 @@ public class IPA1 {
 				 *********************************************/
 				else if (command.matches(patternTake)) {
 					if (command.split(" ").length != 2) {
-						System.out.println("Incorrect command. Usage: take [item]");
+						//System.out.println("Incorrect command. Usage: take [item]");
+						System.out.println("Error");
 					}
 					else if (!overridden) {
 						boolean itemFound = false;
@@ -147,7 +149,8 @@ public class IPA1 {
 									// User shouldn't see this message
 									// But this is for information purpose only
 									if (!((zorkContainer) findObject(mapContainer, inspection, "container")).take(currentItem, command.split(" ")[1])) {
-										System.out.println("Can't take item from unopened container");
+										//System.out.println("Can't take item from unopened container");
+										System.out.println("Error");
 									}
 									else {
 										itemFound = true;
@@ -157,15 +160,16 @@ public class IPA1 {
 						}
 						
 						if (!itemFound) {
-							System.out.println("Item [" 
+							/*System.out.println("Item [" 
 									+ command.split(" ")[1]
 									+ "] does not exist in room ["
-									+ currentRoom + "]");
+									+ currentRoom + "]");*/
+							System.out.println("Error");
 						}
 						else {
-							System.out.println("Item [" 
+							System.out.println("Item " 
 									+ command.split(" ")[1] 
-									+ "] added to inventory");
+									+ " added to inventory.");
 						}
 					}
 				}
@@ -174,7 +178,8 @@ public class IPA1 {
 				 *********************************************/
 				else if (command.matches(patternOpen)) {
 					if (command.split(" ").length != 2) {
-						System.out.println("Incorrect command. Usage: open [target]");
+						//System.out.println("Incorrect command. Usage: open [target]");
+						System.out.println("Error");
 					}
 					else if (!overridden) {
 						if (command.trim().equals("open exit")) {
@@ -184,7 +189,8 @@ public class IPA1 {
 							}
 						}
 						else if (!((room) findObject(mapContainer, currentRoom, "room")).contains("container", command.split(" ")[1])) {
-							System.out.println("No such container in room " + currentRoom);
+							//System.out.println("No such container in room " + currentRoom);
+							System.out.println("Error");
 						}
 						else {
 							//System.out.println("opening " + command.split(" ")[1]);
@@ -205,11 +211,13 @@ public class IPA1 {
 								System.out.println(((zorkItem) findObject(mapContainer, command.split(" ")[1], "item")).writing);
 							}
 							else {
-								System.out.println("Item " + command.split(" ")[1] + " has no description.");
+								//System.out.println("Item " + command.split(" ")[1] + " has no description.");
+								System.out.println("Nothing written.");
 							}
 						}
 						else {
-							System.out.println("No such item in inventory");
+							//System.out.println("No such item in inventory");
+							System.out.println("Error");
 						}
 					}
 				}
@@ -218,7 +226,8 @@ public class IPA1 {
 				 *********************************************/
 				else if (command.matches(patternDrop)) {
 					if (command.split(" ").length != 2) {
-						System.out.println("Incorrect command. usage: drop [item]");
+						//System.out.println("Incorrect command. usage: drop [item]");
+						System.out.println("Error");
 					}
 					else if (!overridden) {
 						((room) findObject(mapContainer, currentRoom, "room")).dropItem(currentItem, command.split(" ")[1]);
@@ -229,14 +238,16 @@ public class IPA1 {
 				 *********************************************/
 				else if (command.matches(patternPut)) {
 					if (command.split(" ").length != 4) {
-						System.out.println("Incorrect command. Usage: put [item] in [target]");
+						//System.out.println("Incorrect command. Usage: put [item] in [target]");
+						System.out.println("Error");
 					}
 					else if (!overridden) {
 						if (((room) findObject(mapContainer, currentRoom, "room")).contains("container", command.split(" ")[3])) {
 							mapContainer = ((zorkContainer) findObject(mapContainer, command.split(" ")[3], "container")).put(mapContainer, currentItem, command.split(" ")[1], currentRoom);
 						}
 						else {
-							System.out.println("No such container");
+							//System.out.println("No such container");
+							System.out.println("Error");
 						}
 					}
 				}
@@ -245,14 +256,16 @@ public class IPA1 {
 				 *********************************************/
 				else if (command.matches(patternTurnOn)) {
 					if (command.split(" ").length != 3) {
-						System.out.println("Incorrect command. Usage: turn on [item]");
+						//System.out.println("Incorrect command. Usage: turn on [item]");
+						System.out.println("Error");
 					}
 					else if (!overridden) {
 						if (currentItem.contains(command.split(" ")[2])) {
 							mapContainer = ((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).activate(mapContainer, currentItem, currentRoom);
 						}
 						else {
-							System.out.println("Can't turn on non-inventorized item [" + command.split(" ")[2] + "]");
+							//System.out.println("Can't turn on non-inventorized item [" + command.split(" ")[2] + "]");
+							System.out.println("Error");
 						}
 					}
 				}
@@ -262,7 +275,8 @@ public class IPA1 {
 				else if (command.matches(patternAttack)) {
 					//System.out.println("attacking monster...");
 					if (command.split(" ").length != 4) {
-						System.out.println("Incorrect command. Usage: attack [target] with [object]");
+						//System.out.println("Incorrect command. Usage: attack [target] with [object]");
+						System.out.println("Error");
 					}
 					else if (!overridden) {
 						if (((room) findObject(mapContainer, currentRoom, "room")).contains("creature", command.split(" ")[1])) {
@@ -272,11 +286,13 @@ public class IPA1 {
 									((creature) findObject(mapContainer, command.split(" ")[1], "creature")).attack(mapContainer, currentItem, command.split(" ")[3], currentRoom);
 							}
 							else {
-								System.out.println("Item " + command.split(" ")[3] + " is not in your inventory");
+								//System.out.println("Item " + command.split(" ")[3] + " is not in your inventory");
+								System.out.println("Error");
 							}
 						}
 						else {
-							System.out.println("No such creature in room " + currentRoom);
+							//System.out.println("No such creature in room " + currentRoom);
+							System.out.println("Error");
 						}
 					}
 				}
@@ -293,7 +309,8 @@ public class IPA1 {
 					System.out.println("Items: " + inspectedRoom.item);
 				}
 				else {
-					System.out.println("Unimplemented or unrecognized command");
+					//System.out.println("Unimplemented or unrecognized command");
+					System.out.println("Error");
 				}
 				
 				if (!overridden) {

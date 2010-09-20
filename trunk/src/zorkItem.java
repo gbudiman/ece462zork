@@ -32,7 +32,7 @@ public class zorkItem extends mapComponent {
 	}
 	
 	public List<mapComponent> activate(List<mapComponent> map, List<String> inventory, String currentRoom) {
-		System.out.println("You activate the " + this.name);
+		System.out.println("You activate the " + this.name + ".");
 		if (this.turnon.print != null) {
 			System.out.println(this.turnon.print);
 		}

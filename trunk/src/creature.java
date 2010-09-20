@@ -84,18 +84,21 @@ public class creature extends mapComponent {
 	
 	public List<mapComponent> attack(List<mapComponent> map, List<String> item, String weapon, String currentRoom) {
 		if (this.vulnerability.contains(weapon)) {
-			if (item.contains(this.attack.condition.object)
-					&& ((zorkItem) findObject(map, weapon, "item")).status.equals(this.attack.condition.status)) {
+			/*if (item.contains(this.attack.condition.object)
+					&& ((zorkItem) findObject(map, weapon, "item")).status.equals(this.attack.condition.status)) {*/
+			if (this.attack.checkCondition(item, map)) {
 				System.out.println("You assault the " + this.name + " with the " + weapon);
-				System.out.println(this.attack.print);
+				System.out.println(this.attack.description);
 				map = takeAction(map, this.attack.action, item, currentRoom);
 			}	
 			else {
-				System.out.println("Unmatching " + weapon + " status");
+				//System.out.println("Unmatching " + weapon + " status");
+				System.out.println("Error");
 			}
 		}
 		else {
-			System.out.println(this.name + " is invulnerable to " + weapon);
+			//System.out.println(this.name + " is invulnerable to " + weapon);
+			System.out.println("Error");
 		}
 		return map;
 	}
