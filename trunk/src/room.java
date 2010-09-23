@@ -147,9 +147,14 @@ public class room extends mapComponent {
 		return null;
 	}
 	
-	public void addItem(String newItem) {
+	public void addItem(String newItem, List<mapComponent> map) {
 		// Add new item to current room
-		this.item.add(newItem);
+		if (((zorkItem) findObject(map, newItem, "item")) != null) {
+			this.item.add(newItem);
+		}
+		else if (((creature) findObject(map, newItem, "creature")) != null) {
+			this.creatures.add(newItem);
+		}
 	}
 	
 	public void dropItem(List<String> inventory, String itemToDrop) {
