@@ -1,0 +1,13 @@
+Original specification didn't mention that <action> element may contain regular commands typed by player. This program only executes <action> that contains Behind-The-Scenes command (BTS-command). The programmer didn't realize that <action> should also be able to execute normally-typed command until very late (when the sample pack was released) to the deadline. A small patch to the program was possible to partially implement the expected functionality, but implementing the desired functionality would require overhauling major part of the algorithm, which would be very risky of running into unfunctional program given the short time between the change and the deadline. -- This problem may have caused the failure in itemtest 3 and 4
+
+On the other hand, by the specification as of 9/23/2010, the order of operations are as follows:
+
+When the user enters a command:
+1.       Check if command is overwritten by any triggers.
+2.       Execute command if not overwritten.
+3.       Check if effects of command activate a trigger.
+4.       If so, continue to check if new status effects activate additional triggers ad infinitum. 
+
+It is not explicitly mentioned in the specification that if command is overwritten, there will be actions in the overriding triggers that needs to be done. The programmer realized this only after looking at the sample pack. Thus with very few days left, there's not enough time to implement this.
+
+It is also claimed that if a program passes the sample run posted in the assignment site, it should at least pass the first trigger test. This program have passed the sample run through, but didn't pass the first trigger test, which raises some questions. The unclear command-overriding trigger specification above may also have caused these problems. -- This problem causes the entire trigger test to fail.

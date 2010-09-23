@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 public class mapComponent {
 	// Generic class component in map
@@ -32,7 +31,7 @@ public class mapComponent {
 		return soughtObject;
 	}
 	
-	public List<mapComponent> takeAction(List<mapComponent> map, String[] actionArray, List<String> inventory, String currentRoom) {
+	public unity takeAction(List<mapComponent> map, String[] actionArray, List<String> inventory, String currentRoom) {
 		for (int i = 0; i < actionArray.length; i++) {
 			if (actionArray[i] != null) {
 				String[] btsCommand = actionArray[i].split(" ");
@@ -59,7 +58,7 @@ public class mapComponent {
 					// Syntax: Add (...) to (...)
 					// Need to search for room first
 					if (((room) findObject(map, btsCommand[3], "room")) != null) {
-						((room) findObject(map, btsCommand[3], "room")).addItem(btsCommand[1]);
+						((room) findObject(map, btsCommand[3], "room")).addItem(btsCommand[1], map);
 					}
 					// Then search for container, if hasn't found in room
 					else if (((zorkContainer) findObject(map, btsCommand[3], "container")) != null) {
@@ -78,12 +77,136 @@ public class mapComponent {
 					System.out.println("Victory!");
 					System.exit(0);
 				}
+				else if (btsCommand[0].equals("drop")) {
+					// Syntax: drop (...)
+					if (inventory.contains(btsCommand[1])) {
+						inventory.remove(btsCommand[1]);
+						((room) findObject(map, currentRoom, "room")).item.add(btsCommand[1]);
+					}
+				}
+				else if (btsCommand[0].equals("take")) {
+					if (((room) findObject(map, currentRoom, "room")).item.contains(btsCommand[1])) {
+						inventory.add(btsCommand[1]);
+						((room) findObject(map, currentRoom, "room")).item.remove(btsCommand[1]);
+					}
+					else {
+						List<String> containerInRoom = ((room) findObject(map, currentRoom, "room")).container;
+						Iterator<String> icir = containerInRoom.listIterator();
+						while (icir.hasNext()) {
+							String currentContainer = icir.next();
+							if (((zorkContainer) findObject(map, currentContainer, "container")).item.contains(btsCommand[1])
+									&& ((zorkContainer) findObject(map, currentContainer, "currentContainer")).takeAble) {
+								inventory.add(btsCommand[1]);
+								((zorkContainer) findObject(map, currentContainer, "container")).item.remove(btsCommand[1]);
+							}
+						}
+					}
+				}
+				else if (btsCommand[0].equals("open")) {
+					/*if (btsCommand[0].equals("open exit")) {
+						if (((room) findObject(map, currentRoom, "room")).roomType != null
+								&& ((room) findObject(map, currentRoom, "room")).roomType.equals("exit")) {
+							exitFound = true;
+						}
+						else {
+							System.out.println("Error");
+						}
+					}*/
+					if (!((room) findObject(map, currentRoom, "room")).contains("container", btsCommand[1])) {
+						//System.out.println("No such container in room " + currentRoom);
+						System.out.println("Error");
+					}
+					else {
+						//System.out.println("opening " + command.split(" ")[1]);
+						((zorkContainer) findObject(map, btsCommand[1], "container")).open();
+					}
+				}
+				else if (btsCommand[0].equals("put")) {
+					if (((room) findObject(map, currentRoom, "room")).contains("container", btsCommand[3])) {
+						map = ((zorkContainer) findObject(map, btsCommand[3], "container")).put(map, inventory, btsCommand[1], currentRoom);
+					}
+					else {
+						//System.out.println("No such container");
+						System.out.println("Error");
+					}
+				}
+				else if (btsCommand[0].matches("[nsew]")) {
+					String testNextRoom = null;
+					testNextRoom = ((room) findObject(map, currentRoom, "room")).zorkMove(btsCommand[0]);
+					if ((room) findObject(map, testNextRoom, "room") == null) {
+						System.out.println("Error");
+					}
+					else {
+						currentRoom = testNextRoom;
+						// Only print room description when it has one
+						if (((room) findObject(map, currentRoom, "room")).description != null) {
+							System.out.println(((room) findObject(map, currentRoom, "room")).description);
+						}
+					}
+				}
+				else if (btsCommand[0].equals("attack")) {
+					//System.out.println("attacking monster...");
+					if (((room) findObject(map, currentRoom, "room")).contains("creature", btsCommand[1])) {
+						//System.out.println("attacking...");
+						if (inventory.contains(btsCommand[3])) {
+							unity x =
+								((creature) findObject(map, btsCommand[1], "creature")).attack(map, inventory, btsCommand[3], currentRoom);
+							map = x.map;
+							inventory = x.inventory;
+							currentRoom = x.currentRoom;
+						}
+						else {
+							//System.out.println("Item " + command.split(" ")[3] + " is not in your inventory");
+							System.out.println("Error");
+						}
+					}
+					else {
+						//System.out.println("No such creature in room " + currentRoom);
+						System.out.println("Error");
+					}
+				}
+				else if (btsCommand[0].equals("i")) {
+					if ((inventory.toArray()).length > 0) {
+						System.out.println("Inventory: " + (Arrays.toString(inventory.toArray())).replace("[", "").replace("]", ""));
+					}
+					else {
+						System.out.println("Inventory: empty");
+					}
+				}
+				else if (btsCommand[0].equals("read")) {
+					if (inventory.contains(btsCommand[1])) {
+						if (((zorkItem) findObject(map, btsCommand[1], "item")).writing != null) {
+							System.out.println(((zorkItem) findObject(map, btsCommand[1], "item")).writing);
+						}
+						else {
+							//System.out.println("Item " + command.split(" ")[1] + " has no description.");
+							System.out.println("Nothing written.");
+						}
+					}
+					else {
+						//System.out.println("No such item in inventory");
+						System.out.println("Error");
+					}
+				}
+				else if (btsCommand[0].equals("turn")) {
+					if (inventory.contains(btsCommand[2])
+							&& ((zorkItem) findObject(map, btsCommand[2], "item")).turnon != null) {
+						unity x = ((zorkItem) findObject(map, btsCommand[2], "item")).activate(map, inventory, currentRoom);
+						map = x.map;
+						inventory = x.inventory;
+					}
+					else {
+						//System.out.println("Can't turn on non-inventorized item [" + command.split(" ")[2] + "]");
+						System.out.println("Error");
+					}
+				}
 			}
 		}
 		//System.out.println("<<< re-looping");
-		map = findObject(map, currentRoom, "room").searchForTrigger(map, inventory, currentRoom);
+		unity x = findObject(map, currentRoom, "room").searchForTrigger(map, inventory, currentRoom);
+		x.currentRoom = currentRoom;
 		//System.out.println(">>> re-looping done");
-		return map;
+		return x;
 	}
 	
 	public void removeCreature(String ctr) {
@@ -213,16 +336,23 @@ public class mapComponent {
 				}*/
 			}
 		}
+		else if (this.type.equals("creature")) {
+			if (((creature) findObject(map, this.name, "creature")).hasCommandTrigger(command) != null) {
+				result = (((creature) findObject(map, this.name, "creature")).hasCommandTrigger(command).checkCondition(currentItem, map));
+			}
+		}
 		return result;
 	}
 	
-	public List<mapComponent> searchForTrigger(List<mapComponent> map, List<String> inventory, String currentRoom) {
+	public unity searchForTrigger(List<mapComponent> map, List<String> inventory, String currentRoom) {
 		// begin by searching for item first
+		unity x = new unity(map, inventory, currentRoom);
 		ListIterator<String> itemInspected = ((room) this).item.listIterator();
 		boolean trigger = false;
 		while (itemInspected.hasNext()) {
 			String elementInspected = itemInspected.next();
-			if (((zorkItem) findObject(map, elementInspected, "item")).trigger != null) {
+			if (((zorkItem) findObject(map, elementInspected, "item")) != null
+					&& ((zorkItem) findObject(map, elementInspected, "item")).trigger != null) {
 				zorkTrigger[] elementTrigger = ((zorkItem) findObject(map, elementInspected, "room")).trigger;
 				for (int i = 0; i < elementTrigger.length; i++) {
 					if (elementTrigger[i] != null) {
@@ -232,13 +362,13 @@ public class mapComponent {
 								if (!elementTrigger[i].hasBeenInvoked) {
 									System.out.println(elementTrigger[i].description);
 									elementTrigger[i].hasBeenInvoked = true;
-									map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 								}
 							}
 							else {
 								System.out.println(elementTrigger[i].description);
 								elementTrigger[i].hasBeenInvoked = true;
-								map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+								x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 							}
 						}
 					}
@@ -260,12 +390,12 @@ public class mapComponent {
 							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
 								if (!elementTrigger[i].hasBeenInvoked) {
 									elementTrigger[i].hasBeenInvoked = true;
-									map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 								}
 							}
 							else {
 								elementTrigger[i].hasBeenInvoked = true;
-								map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+								x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 							}
 						}
 					}
@@ -287,12 +417,12 @@ public class mapComponent {
 							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
 								if (!elementTrigger[i].hasBeenInvoked) {
 									elementTrigger[i].hasBeenInvoked = true;
-									map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 								}
 							}
 							else {
 								elementTrigger[i].hasBeenInvoked = true;
-								map = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+								x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 							}
 						}
 					}
@@ -300,6 +430,6 @@ public class mapComponent {
 			}
 		}
 		
-		return map;
+		return x;
 	}
 }

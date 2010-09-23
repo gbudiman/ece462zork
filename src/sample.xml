@@ -67,6 +67,7 @@
     <turnon>
       <print>the torch has erupted into a menacing inferno</print>
       <action>Update torch to inferno</action>
+	<action>Add key to chest</action>
     </turnon>
   </item>
   <item>
@@ -103,6 +104,7 @@
   <creature>
     <name>gnome</name>
     <vulnerability>explosive</vulnerability>
+	<vulnerability>torch</vulnerability>
     <attack>
       <condition>
         <object>explosive</object>

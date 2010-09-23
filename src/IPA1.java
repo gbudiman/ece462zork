@@ -73,11 +73,18 @@ public class IPA1 {
 		currentRoom = zorkCheckEntrance(mapContainer);
 		
 		while (!exitFound) {
-			System.out.print("> ");
+			//System.out.print("> ");
 			try {
 				command = br.readLine();
 				// Check for command override on all command
 				overridden = ((room) findObject(mapContainer, currentRoom, "room")).checkTrigger(command, currentItem, mapContainer);
+				if (!overridden && command.split(" ")[0].equals("attack")) {
+					//System.out.println(command);
+					if (((creature) findObject(mapContainer, command.split(" ")[1], "creature")) != null) {
+						overridden = ((creature) findObject(mapContainer, command.split(" ")[1], "creature")).checkTrigger(command, currentItem, mapContainer);
+					}
+					//System.out.println("this : " + overridden);
+				}
 				//System.out.println("Command caught: " + command);
 				
 				/*********************************************
@@ -150,7 +157,7 @@ public class IPA1 {
 									// But this is for information purpose only
 									if (!((zorkContainer) findObject(mapContainer, inspection, "container")).take(currentItem, command.split(" ")[1])) {
 										//System.out.println("Can't take item from unopened container");
-										System.out.println("Error");
+										//System.out.println("Error");
 									}
 									else {
 										itemFound = true;
@@ -186,6 +193,9 @@ public class IPA1 {
 							if (((room) findObject(mapContainer, currentRoom, "room")).roomType != null
 									&& ((room) findObject(mapContainer, currentRoom, "room")).roomType.equals("exit")) {
 								exitFound = true;
+							}
+							else {
+								System.out.println("Error");
 							}
 						}
 						else if (!((room) findObject(mapContainer, currentRoom, "room")).contains("container", command.split(" ")[1])) {
@@ -260,8 +270,11 @@ public class IPA1 {
 						System.out.println("Error");
 					}
 					else if (!overridden) {
-						if (currentItem.contains(command.split(" ")[2])) {
-							mapContainer = ((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).activate(mapContainer, currentItem, currentRoom);
+						if (currentItem.contains(command.split(" ")[2])
+								&& ((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).turnon != null) {
+							unity x = ((zorkItem) findObject(mapContainer, command.split(" ")[2], "item")).activate(mapContainer, currentItem, currentRoom);
+							mapContainer = x.map;
+							currentItem = x.inventory;
 						}
 						else {
 							//System.out.println("Can't turn on non-inventorized item [" + command.split(" ")[2] + "]");
@@ -282,8 +295,11 @@ public class IPA1 {
 						if (((room) findObject(mapContainer, currentRoom, "room")).contains("creature", command.split(" ")[1])) {
 							//System.out.println("attacking...");
 							if (currentItem.contains(command.split(" ")[3])) {
-								mapContainer = 
+								unity x =
 									((creature) findObject(mapContainer, command.split(" ")[1], "creature")).attack(mapContainer, currentItem, command.split(" ")[3], currentRoom);
+								mapContainer = x.map;
+								currentItem = x.inventory;
+								currentRoom = x.currentRoom;
 							}
 							else {
 								//System.out.println("Item " + command.split(" ")[3] + " is not in your inventory");
@@ -314,7 +330,9 @@ public class IPA1 {
 				}
 				
 				if (!overridden) {
-					mapContainer = ((mapComponent) findObject(mapContainer, currentRoom, "room")).searchForTrigger(mapContainer, currentItem, currentRoom);
+					unity x = ((mapComponent) findObject(mapContainer, currentRoom, "room")).searchForTrigger(mapContainer, currentItem, currentRoom);
+					mapContainer = x.map;
+					currentItem = x.inventory;
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
