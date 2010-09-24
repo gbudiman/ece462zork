@@ -37,9 +37,11 @@ public class mapComponent {
 				String[] btsCommand = actionArray[i].split(" ");
 				if (btsCommand[0].equals("Update")) {
 					// Syntax: Update (...) to (...)
-					
+					//System.out.println("update called");
 					if ((zorkItem) findObject(map, btsCommand[1], "item") != null) {
+						//System.out.println("called here");
 						((zorkItem) findObject(map, btsCommand[1], "item")).status = btsCommand[3];
+						//System.out.println(((zorkItem) findObject(map, btsCommand[1], "item")).status);
 					}
 					else if ((room) findObject(map, btsCommand[1], "room") != null) {
 						((room) findObject(map, btsCommand[1], "room")).status = btsCommand[3];
@@ -369,21 +371,21 @@ public class mapComponent {
 				zorkTrigger[] elementTrigger = ((zorkItem) findObject(map, elementInspected, "room")).trigger;
 				for (int i = 0; i < elementTrigger.length; i++) {
 					if (elementTrigger[i] != null) {
-						trigger = elementTrigger[i].checkCondition(inventory, map);
+						trigger = elementTrigger[i].checkConditionQuiet(inventory, map);
 						if (trigger)  {
 							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
 								if (!elementTrigger[i].hasBeenInvoked) {
-									System.out.println(elementTrigger[i].description);
-									elementTrigger[i].hasBeenInvoked = true;
-									if (elementTrigger[i].action == null) {
+									if (elementTrigger[i].command == null) {
+										//System.out.println(elementTrigger[i].description);
+										elementTrigger[i].hasBeenInvoked = true;
 										x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 									}
 								}
 							}
 							else {
-								System.out.println(elementTrigger[i].description);
-								elementTrigger[i].hasBeenInvoked = true;
-								if (elementTrigger[i].action == null) {
+								if (elementTrigger[i].command == null) {
+									//System.out.println(elementTrigger[i].description);
+									elementTrigger[i].hasBeenInvoked = true;
 									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 								}
 							}
@@ -402,19 +404,21 @@ public class mapComponent {
 				zorkTrigger[] elementTrigger = ((zorkContainer) findObject(map, elementInspected, "container")).trigger;
 				for (int i = 0; i < elementTrigger.length; i++) {
 					if (elementTrigger[i] != null) {
-						trigger = elementTrigger[i].checkCondition(inventory, map);
+						trigger = elementTrigger[i].checkConditionQuiet(inventory, map);
 						if (trigger)  {
 							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
 								if (!elementTrigger[i].hasBeenInvoked) {
-									elementTrigger[i].hasBeenInvoked = true;
-									if (elementTrigger[i].action == null) {
+									if (elementTrigger[i].command == null) {
+										//System.out.println(elementTrigger[i].description);
+										elementTrigger[i].hasBeenInvoked = true;
 										x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 									}
 								}
 							}
 							else {
-								elementTrigger[i].hasBeenInvoked = true;
-								if (elementTrigger[i].action == null) {
+								if (elementTrigger[i].command == null) {
+									//System.out.println(elementTrigger[i].description);
+									elementTrigger[i].hasBeenInvoked = true;
 									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 								}
 							}
@@ -429,23 +433,27 @@ public class mapComponent {
 		trigger = false;
 		while (itemInspected.hasNext()) {
 			String elementInspected = itemInspected.next();
+			//System.out.println("inspect" + elementInspected); // TODO
 			if (((creature) findObject(map, elementInspected, "creature")).trigger != null) {
 				zorkTrigger[] elementTrigger = ((creature) findObject(map, elementInspected, "creature")).trigger;
 				for (int i = 0; i < elementTrigger.length; i++) {
 					if (elementTrigger[i] != null) {
-						trigger = elementTrigger[i].checkCondition(inventory, map);
+						trigger = elementTrigger[i].checkConditionQuiet(inventory, map);
 						if (trigger)  {
 							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
 								if (!elementTrigger[i].hasBeenInvoked) {
-									elementTrigger[i].hasBeenInvoked = true;
-									if (elementTrigger[i].action == null) {
+									//System.out.println("HAH! " + elementTrigger[i].command);
+									if (elementTrigger[i].command == null) {
+										//System.out.println(elementTrigger[i].description);
+										elementTrigger[i].hasBeenInvoked = true;
 										x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 									}
 								}
 							}
 							else {
-								elementTrigger[i].hasBeenInvoked = true;
-								if (elementTrigger[i].action == null) {
+								if (elementTrigger[i].command == null) {
+									//System.out.println(elementTrigger[i].description);
+									elementTrigger[i].hasBeenInvoked = true;
 									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 								}
 							}
@@ -454,7 +462,7 @@ public class mapComponent {
 				}
 			}
 		}
-		
 		return x;
+		
 	}
 }

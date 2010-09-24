@@ -88,6 +88,15 @@ public class IPA1 {
 					//System.out.println(command);
 					if (((creature) findObject(mapContainer, command.split(" ")[1], "creature")) != null) {
 						overridden = ((creature) findObject(mapContainer, command.split(" ")[1], "creature")).checkTrigger(command, currentItem, mapContainer);
+						if (overridden) {
+							unity x = findObject(mapContainer, currentRoom, "room").takeAction(mapContainer
+																							, ((creature) findObject(mapContainer, command.split(" ")[1], "creature")).trigger[0].action
+																							, currentItem
+																							, currentRoom);
+							currentItem = x.inventory;
+							currentRoom = x.currentRoom;
+							mapContainer = x.map;
+						}
 					}
 					//System.out.println("this : " + overridden);
 				}

@@ -18,7 +18,9 @@ public class creature extends mapComponent {
 	public void info() {
 		System.out.println("!!! " + type + " " + name);
 		System.out.println("Vulnerability: " + vulnerability);
-		attack.info();
+		if (this.attack != null) {
+			attack.info();
+		}
 		for (int i = 0; i < trigger.length; i++) {
 			if (trigger[i] != null) {
 				trigger[i].info();
