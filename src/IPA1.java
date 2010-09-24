@@ -78,6 +78,12 @@ public class IPA1 {
 				command = br.readLine();
 				// Check for command override on all command
 				overridden = ((room) findObject(mapContainer, currentRoom, "room")).checkTrigger(command, currentItem, mapContainer);
+				/*if (overridden && ((room) findObject(mapContainer, currentRoom, "room")).trigger[0] != null) {
+					unity x = findObject(mapContainer, currentRoom, "room").takeAction(mapContainer, ((room) findObject(mapContainer, currentRoom, "room")).trigger[0].action, currentItem, currentRoom);
+					currentItem = x.inventory;
+					currentRoom = x.currentRoom;
+					mapContainer = x.map;
+				}*/
 				if (!overridden && command.split(" ")[0].equals("attack")) {
 					//System.out.println(command);
 					if (((creature) findObject(mapContainer, command.split(" ")[1], "creature")) != null) {

@@ -57,7 +57,10 @@ public class mapComponent {
 				else if (btsCommand[0].equals("Add")) {
 					// Syntax: Add (...) to (...)
 					// Need to search for room first
-					if (((room) findObject(map, btsCommand[3], "room")) != null) {
+					if (btsCommand[3].equals("inventory")) {
+						inventory.add(btsCommand[1]);
+					}
+					else if (((room) findObject(map, btsCommand[3], "room")) != null) {
 						((room) findObject(map, btsCommand[3], "room")).addItem(btsCommand[1], map);
 					}
 					// Then search for container, if hasn't found in room
@@ -68,10 +71,20 @@ public class mapComponent {
 				else if (btsCommand[0].equals("Delete")) {
 					// Syntax: Delete (...)
 					
+					if (((room) findObject(map, currentRoom, "room")).container.contains(btsCommand[1])) {
+						List<String> itemToDelete = ((zorkContainer) findObject(map, btsCommand[1], "container")).item;
+						Iterator<String> itd = itemToDelete.iterator();
+						while(itd.hasNext()) {
+							((room) findObject(map, currentRoom, "room")).item.remove(itd.next());
+						}
+					}
+					
 					((room) findObject(map, currentRoom, "room")).creatures.remove(btsCommand[1]);
 					((room) findObject(map, currentRoom, "room")).item.remove(btsCommand[1]);
 					((room) findObject(map, currentRoom, "room")).container.remove(btsCommand[1]);
 					((room) findObject(map, currentRoom, "room")).detachBorder(btsCommand[1]);
+					inventory.remove(btsCommand[1]);
+					
 				}
 				else if (actionArray[i].equals("Game Over")) {
 					System.out.println("Victory!");
@@ -362,13 +375,17 @@ public class mapComponent {
 								if (!elementTrigger[i].hasBeenInvoked) {
 									System.out.println(elementTrigger[i].description);
 									elementTrigger[i].hasBeenInvoked = true;
-									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+									if (elementTrigger[i].action == null) {
+										x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+									}
 								}
 							}
 							else {
 								System.out.println(elementTrigger[i].description);
 								elementTrigger[i].hasBeenInvoked = true;
-								x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+								if (elementTrigger[i].action == null) {
+									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+								}
 							}
 						}
 					}
@@ -390,12 +407,16 @@ public class mapComponent {
 							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
 								if (!elementTrigger[i].hasBeenInvoked) {
 									elementTrigger[i].hasBeenInvoked = true;
-									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+									if (elementTrigger[i].action == null) {
+										x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+									}
 								}
 							}
 							else {
 								elementTrigger[i].hasBeenInvoked = true;
-								x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+								if (elementTrigger[i].action == null) {
+									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+								}
 							}
 						}
 					}
@@ -417,12 +438,16 @@ public class mapComponent {
 							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
 								if (!elementTrigger[i].hasBeenInvoked) {
 									elementTrigger[i].hasBeenInvoked = true;
-									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+									if (elementTrigger[i].action == null) {
+										x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+									}
 								}
 							}
 							else {
 								elementTrigger[i].hasBeenInvoked = true;
-								x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+								if (elementTrigger[i].action == null) {
+									x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
+								}
 							}
 						}
 					}
