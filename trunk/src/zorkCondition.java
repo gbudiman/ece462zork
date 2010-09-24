@@ -89,14 +89,14 @@ public class zorkCondition {
 			}
 			// Otherwise, all objects can have status
 			else {
-				//System.out.println("+>> " + this.object);
+				System.out.println("+>> " + this.object + " " + this.status);
 				if (((room) findObject(map, this.object, "room")) != null) {
 					if (this.status.equals(((room) findObject(map, this.object, "room")).status)) {
 						return true;
 					}
 				}
 				else if (((zorkItem) findObject(map, this.object, "item")) != null) {
-					//System.out.println("+>>>" + ((zorkItem) findObject(map, this.object, "item")).status + " expected " + this.status);
+					System.out.println("+>>>" + ((zorkItem) findObject(map, this.object, "item")).status + " expected " + this.status);
 					if (this.status.equals(((zorkItem) findObject(map, this.object, "item")).status)) {
 						return true;
 					}
