@@ -62,6 +62,7 @@ public class XMLReader {
 
 	private void instantiateItem(NodeList parent,
 			List<mapComponent> mapContainer) {
+		
 		zorkItem tempItem = new zorkItem(XMLGetValue(parent, "name")
 							, ((Node) parent).getNodeName()
 							, XMLGetValue(parent, "writing")

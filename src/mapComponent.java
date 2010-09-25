@@ -133,6 +133,11 @@ public class mapComponent {
 					if (!itemFound) {
 						System.out.println("Error");
 					}
+					else {
+						System.out.println("Item " 
+								+ btsCommand[1] 
+								+ " added to inventory.");
+					}
 				}
 				else if (btsCommand[0].equals("open")) {
 					/*if (btsCommand[0].equals("open exit")) {
@@ -394,9 +399,11 @@ public class mapComponent {
 		boolean trigger = false;
 		while (itemInspected.hasNext()) {
 			String elementInspected = itemInspected.next();
+			// TODO
+			// System.out.println("Inspecting " + elementInspected);
 			if (((zorkItem) findObject(map, elementInspected, "item")) != null
 					&& ((zorkItem) findObject(map, elementInspected, "item")).trigger != null) {
-				zorkTrigger[] elementTrigger = ((zorkItem) findObject(map, elementInspected, "room")).trigger;
+				zorkTrigger[] elementTrigger = ((zorkItem) findObject(map, elementInspected, "item")).trigger;
 				for (int i = 0; i < elementTrigger.length; i++) {
 					if (elementTrigger[i] != null) {
 						trigger = elementTrigger[i].checkConditionQuiet(inventory, map);
