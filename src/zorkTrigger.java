@@ -43,7 +43,9 @@ public class zorkTrigger {
 					result = this.condition[i].assess(inventory, map);
 					//System.out.println("+---" + result + " " + this.condition[i].object);
 					if (this.type == null || this.type.equals("single")) {
-						if (!this.hasBeenInvoked) {
+						if (!this.hasBeenInvoked && result) {
+							//System.out.println("^^^ value changed!");
+							this.hasBeenInvoked = true;
 							if (result && this.description != null) {
 								System.out.println(this.description);
 								return result;
@@ -55,10 +57,12 @@ public class zorkTrigger {
 					}
 					else {
 						if (result && this.description != null) {
+							this.hasBeenInvoked = true;
 							System.out.println(this.description);
 							return result;
 						}
 						else if (result) {
+							this.hasBeenInvoked = true;
 							return result;
 						}
 					}
@@ -73,12 +77,18 @@ public class zorkTrigger {
 		//System.out.println("++checking condition for trigger " + this.command);
 		if (this.condition != null) {
 			for (int i = 0; i < this.condition.length; i++) {
-				if (this.condition[i] != null) {
+				if (this.condition[i] != null && this.command == null) {
+					//System.out.println("in here!");
 					result = this.condition[i].assess(inventory, map);
 					//System.out.println("+---" + result + " " + this.condition[i].object);
+					//System.out.println(result + " " + this.type);
 					if (this.type == null || this.type.equals("single")) {
-						if (!this.hasBeenInvoked) {
-							if (result && this.description != null) {	
+						//System.out.println(" >>> " + this.hasBeenInvoked);
+						if (!this.hasBeenInvoked && result) {
+							//System.out.println("haf " + result);
+							//System.out.println("&&& value changed!");
+							//this.hasBeenInvoked = true;
+							if (result && this.description != null) {
 								if (this.command == null) {
 									System.out.println(this.description);
 								}
@@ -91,10 +101,53 @@ public class zorkTrigger {
 					}
 					else {
 						if (result && this.description != null) {
+							this.hasBeenInvoked = true;
 							//System.out.println(this.description);
 							return result;
 						}
 						else if (result) {
+							this.hasBeenInvoked = true;
+							return result;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	public boolean checkConditionForAttack(List<String> inventory, List<mapComponent> map) {
+		boolean result = false;
+		//System.out.println("++checking condition for trigger " + this.command);
+		if (this.condition != null) {
+			for (int i = 0; i < this.condition.length; i++) {
+				if (this.condition[i] != null && this.command == null) {
+					//System.out.println("in here!");
+					result = this.condition[i].assess(inventory, map);
+					//System.out.println("+---" + result + " " + this.condition[i].object);
+					//System.out.println(result + " " + this.type);
+					if (this.type == null || this.type.equals("single")) {
+						//System.out.println(" >>> " + this.hasBeenInvoked);
+						if (!this.hasBeenInvoked && result) {
+							//System.out.println("haf " + result);
+							//System.out.println("&&& value changed!");
+							//this.hasBeenInvoked = true;
+							if (result && this.description != null) {
+								return result;
+							}
+							else if (result) {
+								return result;
+							}
+						}
+					}
+					else {
+						if (result && this.description != null) {
+							this.hasBeenInvoked = true;
+							//System.out.println(this.description);
+							return result;
+						}
+						else if (result) {
+							this.hasBeenInvoked = true;
 							return result;
 						}
 					}

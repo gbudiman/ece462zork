@@ -107,7 +107,9 @@ public class creature extends mapComponent {
 					}
 				}
 				if (!noCondition) {
-					if (this.attack.checkCondition(item, map)) {
+					//System.out.println("in here");
+					if (this.attack.checkConditionForAttack(item, map)) {
+						//System.out.println("step out");
 						System.out.println("You assault the " + this.name + " with the " + weapon + ".");
 						if (this.attack.description != null) {
 							System.out.println(this.attack.description);
@@ -137,12 +139,15 @@ public class creature extends mapComponent {
 					&& this.trigger[i].command != null
 					&& this.trigger[i].command.equals(reqCommand)) {
 				// Trigger is of type single
+				//System.out.println(reqCommand + " expected " + this.trigger[i].command);
 				if (this.trigger[i].type != null
 						|| this.trigger[i].type.equals("single")) {
+					//System.out.println("inside: " + this.trigger[i].hasBeenInvoked);
 					if (this.trigger[i].hasBeenInvoked) {
 						return null;
 					}
 					else {
+						//System.out.println("returning... ");
 						return this.trigger[i];
 					}
 				}

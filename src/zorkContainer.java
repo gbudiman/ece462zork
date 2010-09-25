@@ -75,11 +75,16 @@ public class zorkContainer extends mapComponent {
 				System.out.println("Error");
 			}
 			else {
-				this.item.add(newItem);
-				inventory.remove(newItem);
-				this.takeAble = true;
-				System.out.println("Item " + newItem + " added to " + this.name + ".");
-				//map = checkTrigger(map, this.trigger, currentRoom);
+				if (inventory.contains(newItem)) {
+					this.item.add(newItem);
+					inventory.remove(newItem);
+					this.takeAble = true;
+					System.out.println("Item " + newItem + " added to " + this.name + ".");
+					//map = checkTrigger(map, this.trigger, currentRoom);
+				}
+				else {
+					System.out.println("Error");
+				}
 			}
 		}
 		else {
