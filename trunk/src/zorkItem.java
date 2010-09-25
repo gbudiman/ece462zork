@@ -11,7 +11,7 @@ public class zorkItem extends mapComponent {
 		writing = w;
 		status = s;
 		turnon = to;
-		zt = trigger;
+		trigger = zt;
 	}
 	
 	public void info() {
