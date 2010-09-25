@@ -81,10 +81,20 @@ public class mapComponent {
 						}
 					}
 					
-					((room) findObject(map, currentRoom, "room")).creatures.remove(btsCommand[1]);
+					Iterator<mapComponent> t = map.listIterator();
+					while (t.hasNext()) {
+						mapComponent checkT = t.next();
+						if (checkT.type.equals("room")) {
+							((room) findObject(map, checkT.name, "room")).creatures.remove(btsCommand[1]);
+							((room) findObject(map, checkT.name, "room")).item.remove(btsCommand[1]);
+							((room) findObject(map, checkT.name, "room")).container.remove(btsCommand[1]);
+							((room) findObject(map, checkT.name, "room")).detachBorder(btsCommand[1]);
+						}
+					}
+					/*((room) findObject(map, currentRoom, "room")).creatures.remove(btsCommand[1]);
 					((room) findObject(map, currentRoom, "room")).item.remove(btsCommand[1]);
 					((room) findObject(map, currentRoom, "room")).container.remove(btsCommand[1]);
-					((room) findObject(map, currentRoom, "room")).detachBorder(btsCommand[1]);
+					((room) findObject(map, currentRoom, "room")).detachBorder(btsCommand[1]);*/
 					inventory.remove(btsCommand[1]);
 					
 				}
@@ -95,14 +105,16 @@ public class mapComponent {
 				else if (btsCommand[0].equals("drop")) {
 					// Syntax: drop (...)
 					if (inventory.contains(btsCommand[1])) {
-						inventory.remove(btsCommand[1]);
-						((room) findObject(map, currentRoom, "room")).item.add(btsCommand[1]);
+						//inventory.remove(btsCommand[1]);
+						((room) findObject(map, currentRoom, "room")).dropItem(inventory, btsCommand[1]);
 					}
 				}
 				else if (btsCommand[0].equals("take")) {
+					boolean itemFound = false;
 					if (((room) findObject(map, currentRoom, "room")).item.contains(btsCommand[1])) {
 						inventory.add(btsCommand[1]);
 						((room) findObject(map, currentRoom, "room")).item.remove(btsCommand[1]);
+						itemFound = true;
 					}
 					else {
 						List<String> containerInRoom = ((room) findObject(map, currentRoom, "room")).container;
@@ -113,8 +125,13 @@ public class mapComponent {
 									&& ((zorkContainer) findObject(map, currentContainer, "currentContainer")).takeAble) {
 								inventory.add(btsCommand[1]);
 								((zorkContainer) findObject(map, currentContainer, "container")).item.remove(btsCommand[1]);
+								itemFound = true;
 							}
 						}
+					}
+					
+					if (!itemFound) {
+						System.out.println("Error");
 					}
 				}
 				else if (btsCommand[0].equals("open")) {
@@ -351,9 +368,20 @@ public class mapComponent {
 				}*/
 			}
 		}
+		else if (this.type.equals("item")) {
+			if (((zorkItem) findObject(map, this.name, "item")).hasCommandTrigger(command) != null) {
+				result = (((zorkItem) findObject(map, this.name, "item")).hasCommandTrigger(command).checkCondition(currentItem, map));
+			}
+		}
+		else if (this.type.equals("container")) {
+			if (((zorkContainer) findObject(map, this.name, "container")).hasCommandTrigger(command) != null) {
+				result = (((zorkContainer) findObject(map, this.name, "container")).hasCommandTrigger(command).checkCondition(currentItem, map));
+			}
+		}
 		else if (this.type.equals("creature")) {
 			if (((creature) findObject(map, this.name, "creature")).hasCommandTrigger(command) != null) {
 				result = (((creature) findObject(map, this.name, "creature")).hasCommandTrigger(command).checkCondition(currentItem, map));
+				//System.out.println("haf " + result);
 			}
 		}
 		return result;
@@ -433,7 +461,7 @@ public class mapComponent {
 		trigger = false;
 		while (itemInspected.hasNext()) {
 			String elementInspected = itemInspected.next();
-			//System.out.println("inspect" + elementInspected); // TODO
+			//System.out.println("inspect " + elementInspected); // TODO
 			if (((creature) findObject(map, elementInspected, "creature")).trigger != null) {
 				zorkTrigger[] elementTrigger = ((creature) findObject(map, elementInspected, "creature")).trigger;
 				for (int i = 0; i < elementTrigger.length; i++) {
@@ -441,10 +469,12 @@ public class mapComponent {
 						trigger = elementTrigger[i].checkConditionQuiet(inventory, map);
 						if (trigger)  {
 							if (elementTrigger[i].type == null || elementTrigger[i].type.equals("single")) {
+								//System.out.println("YYY! " + elementTrigger[i].hasBeenInvoked);
 								if (!elementTrigger[i].hasBeenInvoked) {
 									//System.out.println("HAH! " + elementTrigger[i].command);
 									if (elementTrigger[i].command == null) {
 										//System.out.println(elementTrigger[i].description);
+										//System.out.println("***value changed!");
 										elementTrigger[i].hasBeenInvoked = true;
 										x = takeAction(map, elementTrigger[i].action, inventory, currentRoom);
 									}

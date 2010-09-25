@@ -77,15 +77,9 @@ public class IPA1 {
 			try {
 				command = br.readLine();
 				// Check for command override on all command
+				/* TODO : This is the working algorithm
 				overridden = ((room) findObject(mapContainer, currentRoom, "room")).checkTrigger(command, currentItem, mapContainer);
-				/*if (overridden && ((room) findObject(mapContainer, currentRoom, "room")).trigger[0] != null) {
-					unity x = findObject(mapContainer, currentRoom, "room").takeAction(mapContainer, ((room) findObject(mapContainer, currentRoom, "room")).trigger[0].action, currentItem, currentRoom);
-					currentItem = x.inventory;
-					currentRoom = x.currentRoom;
-					mapContainer = x.map;
-				}*/
 				if (!overridden && command.split(" ")[0].equals("attack")) {
-					//System.out.println(command);
 					if (((creature) findObject(mapContainer, command.split(" ")[1], "creature")) != null) {
 						overridden = ((creature) findObject(mapContainer, command.split(" ")[1], "creature")).checkTrigger(command, currentItem, mapContainer);
 						if (overridden) {
@@ -98,9 +92,77 @@ public class IPA1 {
 							mapContainer = x.map;
 						}
 					}
-					//System.out.println("this : " + overridden);
+				}*/
+				List<String> contextSearch = new ArrayList<String>();
+				Iterator<String> contextI = ((room) findObject(mapContainer, currentRoom, "room")).creatures.listIterator();
+				while (contextI.hasNext()) {
+					contextSearch.add(contextI.next());
 				}
-				//System.out.println("Command caught: " + command);
+				contextI = ((room) findObject(mapContainer, currentRoom, "room")).container.listIterator();
+				while (contextI.hasNext()) {
+					contextSearch.add(contextI.next());
+				}
+				contextI = ((room) findObject(mapContainer, currentRoom, "room")).item.listIterator();
+				while (contextI.hasNext()) {
+					contextSearch.add(contextI.next());
+				}
+				contextSearch.add(currentRoom);
+				//System.out.println(contextSearch);
+				Iterator<String> contextExecute = contextSearch.listIterator();
+				while (contextExecute.hasNext()) {
+					String currentContext = contextExecute.next();
+					//System.out.println("Checking: " + currentContext); //TODO: remove
+					if (((room) findObject(mapContainer, currentContext, "room")) != null) {
+						overridden = ((room) findObject(mapContainer, currentContext, "room")).checkTrigger(command, currentItem, mapContainer);
+						if (overridden && ((room) findObject(mapContainer, currentContext, "room")).trigger[0] != null) {
+							unity x = findObject(mapContainer, currentContext, "room").takeAction(mapContainer
+									, ((room) findObject(mapContainer, currentContext, "room")).trigger[0].action
+									, currentItem
+									, currentRoom);
+							currentItem = x.inventory;
+							currentRoom = x.currentRoom;
+							mapContainer = x.map;
+						}
+					}
+					else if (((zorkItem) findObject(mapContainer, currentContext, "item")) != null) {
+						overridden = ((zorkItem) findObject(mapContainer, currentContext, "item")).checkTrigger(command, currentItem, mapContainer);
+						if (overridden && ((zorkItem) findObject(mapContainer, currentContext, "item")).trigger[0] != null) {
+							unity x = findObject(mapContainer, currentContext, "item").takeAction(mapContainer
+									, ((zorkItem) findObject(mapContainer, currentContext, "item")).trigger[0].action
+									, currentItem
+									, currentRoom);
+							currentItem = x.inventory;
+							currentRoom = x.currentRoom;
+							mapContainer = x.map;
+						}
+					}
+					else if (((zorkContainer) findObject(mapContainer, currentContext, "container")) != null) {
+						overridden = ((zorkContainer) findObject(mapContainer, currentContext, "container")).checkTrigger(command, currentItem, mapContainer);
+						if (overridden && ((zorkContainer) findObject(mapContainer, currentContext, "container")).trigger[0] != null) {
+							unity x = findObject(mapContainer, currentContext, "container").takeAction(mapContainer
+									, ((zorkContainer) findObject(mapContainer, currentContext, "container")).trigger[0].action
+									, currentItem
+									, currentRoom);
+							currentItem = x.inventory;
+							currentRoom = x.currentRoom;
+							mapContainer = x.map;
+						}
+					}
+					else if (((creature) findObject(mapContainer, currentContext, "creature")) != null) {
+						overridden = ((creature) findObject(mapContainer, currentContext, "creature")).checkTrigger(command, currentItem, mapContainer);
+						// System.out.println("here: " + overridden); //TODO: chk here
+						if (overridden && ((creature) findObject(mapContainer, currentContext, "creature")).trigger[0] != null) {
+							//System.out.println(currentContext + " overridden");
+							unity x = findObject(mapContainer, currentContext, "creature").takeAction(mapContainer
+									, ((creature) findObject(mapContainer, currentContext, "creature")).trigger[0].action
+									, currentItem
+									, currentRoom);
+							currentItem = x.inventory;
+							currentRoom = x.currentRoom;
+							mapContainer = x.map;
+						}
+					}
+				}
 				
 				/*********************************************
 				 * Move command. Accepts n|s|e|w ONLY!
@@ -345,9 +407,18 @@ public class IPA1 {
 				}
 				
 				if (!overridden) {
+					//System.out.println("Doing search"); //TODO
 					unity x = ((mapComponent) findObject(mapContainer, currentRoom, "room")).searchForTrigger(mapContainer, currentItem, currentRoom);
 					mapContainer = x.map;
 					currentItem = x.inventory;
+					
+					/*Iterator<mapComponent> t =  mapContainer.listIterator();
+					while (t.hasNext()) {
+						mapComponent xs = t.next();
+						if (xs.name.equals("axe")) {
+							System.out.println("on: " + ((zorkItem) xs).status);
+						}
+					}*/
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
